@@ -3,6 +3,8 @@ package com.commerce.controller;
 
 import com.commerce.model.Product;
 import com.commerce.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,9 +19,17 @@ public class HomeController {
     @Autowired
     ProductRepository productRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("message", "Bem-vindo à aplicação Spring Boot com Thymeleaf!");
+
+        logger.info("This is an INFO log message.");
+        logger.debug("This is a DEBUG log message.");
+        logger.warn("This is a WARN log message.");
+        logger.error("This is an ERROR log message.");
+
         return "home";
     }
 
