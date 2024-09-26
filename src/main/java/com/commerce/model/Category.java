@@ -10,7 +10,9 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_generator")
-    @SequenceGenerator(name = "category_generator", sequenceName = "category_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "category_generator",
+            sequenceName = "category_seq",
+            allocationSize = 1) // allocationSize define o incremento do valor
     private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
@@ -24,9 +26,10 @@ public class Category {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // O método setId pode ser removido para evitar a alteração manual do ID
+    // public void setId(Long id) {
+    //     this.id = id;
+    // }
 
     public String getName() {
         return name;
