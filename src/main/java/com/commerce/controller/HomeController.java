@@ -5,6 +5,7 @@ import com.commerce.model.Category;
 import com.commerce.model.Product;
 import com.commerce.repository.ProductRepository;
 import com.commerce.service.CategoryService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,14 @@ public class HomeController {
     }
 
     @GetMapping("/1")
+    @Transactional // Adicione a anotação para garantir que a sessão esteja aberta
     public ResponseEntity<Product> getProductById1() {
         Optional<Product> product = productRepository.findById(1L);
 
         if (product.isPresent()) {
+            // Acesse as imagens para forçar o carregamento
+            product.get().getImages().size(); // Força o carregamento
+            System.out.println(product.get().getImages());
             return ResponseEntity.ok(product.get());
         } else {
             return ResponseEntity.notFound().build();

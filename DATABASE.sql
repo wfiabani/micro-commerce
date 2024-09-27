@@ -3,3 +3,7 @@ ALTER COLUMN id SET DEFAULT nextval('category_seq');
 
 ALTER TABLE public.product 
 ALTER COLUMN id SET DEFAULT nextval('product_seq');
+
+
+ALTER TABLE public.image
+ALTER COLUMN id SET DEFAULT nextval('image_seq');
