@@ -4,14 +4,51 @@
     <title>Commerce</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS via CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Font Awesome via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Animate.css via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- jQuery via CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS via CDN -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- SweetAlert2 via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Link para o arquivo JavaScript externo -->
+    <script src="/js/scripts.js"></script>
 </head>
 <body>
-<header></header>
+<header class="container">
+    <h1 class="animate__animated animate__fadeIn">Header <i class="fas fa-shopping-cart"></i></h1>
+</header>
 
-<div class="content">
+<div class="content container">
     <div th:replace="${template}"></div>
 </div>
 
-<footer></footer>
+<footer class="container">
+    <p>Footer</p>
+</footer>
+
+<script>
+    // Exemplo de uso de SweetAlert2
+    $(document).ready(function() {
+        Swal.fire({
+            title: 'Bem-vindo!',
+            text: 'Aproveite sua experiência de compra!',
+            icon: 'success',
+            confirmButtonText: 'Obrigado'
+        });
+    });
+</script>
 </body>
 </html>
