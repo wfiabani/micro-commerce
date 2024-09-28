@@ -29,7 +29,7 @@ public class HomeController {
 
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    @GetMapping("/home")
+    @GetMapping("/layout")
     public String home(Model model) {
         model.addAttribute("message", "Bem-vindo à aplicação Spring Boot com Thymeleaf!");
 
@@ -38,7 +38,10 @@ public class HomeController {
         logger.warn("This is a WARN log message.");
         logger.error("This is an ERROR log message.");
 
-        return "home";
+        model.addAttribute("template", "home/home");
+        model.addAttribute("variable", "var");
+
+        return "layout";
     }
 
     @GetMapping("/1")
