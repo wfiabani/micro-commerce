@@ -17,8 +17,8 @@ public class Image {
     @Column(name = "file_name", nullable = false, length = 255)
     private String fileName;
 
-    @Column(name = "ordem", nullable = false)
-    private Integer ordem;
+    @Column(name = "order", nullable = false)
+    private Integer order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "fk_image_product"))
@@ -49,12 +49,12 @@ public class Image {
         this.fileName = fileName;
     }
 
-    public Integer getOrdem() {
-        return ordem;
+    public Integer getOrder() {
+        return order;
     }
 
-    public void setOrdem(Integer ordem) {
-        this.ordem = ordem;
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public Product getProduct() {
