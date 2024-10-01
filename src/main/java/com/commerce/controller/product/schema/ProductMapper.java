@@ -17,13 +17,13 @@ public interface ProductMapper {
     @Mapping(source = "images", target = "images")
     ProductMapper.GetProduct toGetProduct(Product product);
 
-    ImageDTO toImageDTO(Image image);
+    GetImage toImageDTO(Image image);
 
     record GetProduct(
             Long id,
             String name,
             String categoryName,
-            List<ImageDTO> images, // Lista de imagens detalhadas
+            List<GetImage> images, // Lista de imagens detalhadas
             String shortDescription,
             String longDescription,
             Integer stock,
@@ -32,7 +32,7 @@ public interface ProductMapper {
     ) {
     }
 
-    record ImageDTO(
+    record GetImage(
             Long id,
             String name,
             String fileName,

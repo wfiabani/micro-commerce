@@ -4,7 +4,7 @@ package com.commerce.controller;
 import com.commerce.model.Category;
 import com.commerce.model.Product;
 import com.commerce.repository.ProductRepository;
-import com.commerce.service.CategoryService;
+import com.commerce.manager.CategoryService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
