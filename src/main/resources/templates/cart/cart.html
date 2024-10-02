@@ -23,7 +23,7 @@
                     <td th:text="'R$ ' + ${item.product.price}">R$ 0,00</td> <!-- Exibindo valor unitário -->
                     <td style="width: 50px;">
                         <button class="btn btn-danger btn-sm remove-product" th:data-product-id="${item.product.id}">
-                            <i class="fas fa-times"></i> Remover
+                            <i class="fas fa-times"></i>
                         </button>
                     </td>
                 </tr>
@@ -71,8 +71,6 @@
         $('.remove-product').on('click', function () {
             const productId = $(this).data('product-id');
             console.log('Remover produto com ID:', productId);
-            $(this).closest('tr').remove(); // Remover a linha do produto
-            updateTotals(); // Atualizar os totais após a remoção
         });
 
         // Restringir campo quantidade para aceitar apenas números inteiros
