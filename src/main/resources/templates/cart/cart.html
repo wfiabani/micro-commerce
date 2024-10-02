@@ -1,10 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cart</title>
-</head>
-<body>
+<div class="container mt-4">
+    <!-- Carrinho de Compras -->
+    <div class="row">
+        <!-- Lista de Produtos no Carrinho -->
+        <div class="col-lg-8 col-12">
+            <h2>Carrinho de Compras</h2>
+            <table class="table table-bordered table-responsive-sm">
+                <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Valor Unitário</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Iterando sobre os itens do carrinho -->
+                <tr th:each="item : ${cart.items}">
+                    <td th:text="${item.product.name}">Produto 1</td>
+                    <td style="width: 100px;">
+                        <input type="text" class="form-control quantity-input" th:value="${item.quantity}" data-product-id="${item.product.id}">
+                    </td>
+                    <td th:text="'R$ ' + ${item.product.price}">R$ 0,00</td> <!-- Exibindo valor unitário -->
+                    <td style="width: 50px;">
+                        <button class="btn btn-danger btn-sm remove-product" th:data-product-id="${item.product.id}">
+                            <i class="fas fa-times"></i> Remover
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-</body>
-</html>
+            <!-- Calcular Frete -->
+            <div class="form-inline mt-5"> <!-- Espaço maior entre a listagem de produtos e o cálculo de frete -->
+                <label for="cart-page-cep">CEP:</label>
+                <input type="text" class="form-control ml-2" id="cart-page-cep" placeholder="Digite o CEP" maxlength="9">
+                <button class="btn btn-primary ml-2" id="cart-page-calculate-shipping">Calcular Frete</button>
+            </div>
+        </div>
+
+        <!-- Resumo do Pedido -->
+        <div class="col-lg-4 col-12 mt-4 mt-lg-0">
+            <h3>Resumo do Pedido</h3>
+            <ul class="list-group">
+                <li class="list-group-item">Valor Total dos Produtos: <span id="cart-page-product-total">R$ 0,00</span></li>
+                <li class="list-group-item">Valor do Frete: <span id="cart-page-shipping-total">R$ 0,00</span></li>
+                <li class="list-group-item">Valor Total do Pedido: <span id="cart-page-order-total">R$ 0,00</span></li>
+                <li class="list-group-item">Prazo de Entrega: <span id="cart-page-delivery-time">-</span></li>
+            </ul>
+            <button class="btn btn-success mt-3 w-100">Finalizar Compra</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        function updateTotals() {
+            let productTotal = 0;
+            $('.quantity-input').each(function() {
+                const quantity = parseInt($(this).val(), 10);
+                const productPrice = parseFloat($(this).closest('tr').find('td:nth-child(3)').text().replace('R$ ', '').replace('.', '').replace(',', '.'));
+                const subtotal = productPrice * quantity;
+
+                productTotal += subtotal;
+            });
+            $('#cart-page-product-total').text('R$ ' + productTotal.toFixed(2).replace('.', ','));
+            // Aqui você pode adicionar lógica para calcular o frete e o total do pedido
+        }
+
+        // Remover produto do carrinho
+        $('.remove-product').on('click', function () {
+            const productId = $(this).data('product-id');
+            console.log('Remover produto com ID:', productId);
+            $(this).closest('tr').remove(); // Remover a linha do produto
+            updateTotals(); // Atualizar os totais após a remoção
+        });
+
+        // Restringir campo quantidade para aceitar apenas números inteiros
+        $('.quantity-input').on('input', function () {
+            const value = $(this).val();
+            $(this).val(value.replace(/\D/g, '')); // Substitui qualquer caractere não numérico por vazio
+        });
+
+        // Alterar quantidade de produto ao perder o foco (blur) ou pressionar Enter
+        $('.quantity-input').on('blur keypress', function (e) {
+            if (e.type === 'keypress' && e.which !== 13) {
+                return;
+            }
+            const productId = $(this).data('product-id');
+            const quantity = parseInt($(this).val(), 10);
+            if (!isNaN(quantity) && quantity > 0) {
+                console.log('Alterar quantidade do produto com ID:', productId, 'para:', quantity);
+                updateTotals(); // Chamar a função para atualizar os totais
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'A quantidade deve ser um número inteiro maior que zero.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
+        });
+
+        // Máscara para o campo de CEP
+        $('#cart-page-cep').on('input', function () {
+            const cep = $(this).val().replace(/\D/g, '');
+            if (cep.length > 5) {
+                $(this).val(cep.replace(/^(\d{5})(\d)/, '$1-$2'));
+            } else {
+                $(this).val(cep);
+            }
+        });
+
+        // Calcular Frete
+        $('#cart-page-calculate-shipping').on('click', function () {
+            const cep = $('#cart-page-cep').val().replace(/\D/g, '');
+            if (cep.length === 8) {
+                console.log('CEP informado:', cep);
+                // Aqui você poderia chamar uma função para calcular o frete
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Por favor, insira um CEP válido.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
+        });
+
+        // Inicializar totais na primeira carga
+        updateTotals();
+    });
+</script>

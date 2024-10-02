@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper
@@ -23,12 +24,18 @@ public interface ProductMapper {
             Long id,
             String name,
             String categoryName,
-            List<GetImage> images, // Lista de imagens detalhadas
+            List<GetImage> images,
             String shortDescription,
             String longDescription,
             Integer stock,
             String productId,
-            Double price
+            BigDecimal price,
+            boolean active,
+            String seoDescription,
+            Double height,
+            Double width,
+            Double length,
+            Double weight
     ) {
     }
 
@@ -37,7 +44,8 @@ public interface ProductMapper {
             String name,
             String fileName,
             Integer order
-    ) {}
+    ) {
+    }
 
 
 }

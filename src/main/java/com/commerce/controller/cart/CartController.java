@@ -24,12 +24,25 @@ public class CartController {
         this.productManager = productManager;
     }
 
-    @GetMapping("")
+    @GetMapping("/resumo")
     public String getCart(Model model) {
         Cart cart = cartManager.getCart();
-        System.out.println(cart.getItems());
+        System.out.println("Acessando o endpoint /resumo");
+        model.addAttribute("cart", CartMapper.INSTANCE.toGetCart(cart));
         model.addAttribute("template", "cart/cart");
         return "layout";
+    }
+
+
+    @GetMapping("/get-items")
+    @ResponseBody
+    public ResponseEntity<CartMapper.GetCart> getJSONCart() {
+        Cart cart = cartManager.getCart();
+        if (cart == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        var response = CartMapper.INSTANCE.toGetCart(cart);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/add")

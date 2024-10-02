@@ -39,7 +39,25 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Image> images;
 
-    // Getters and Setters
+    @Column(name = "height", nullable = false)
+    private double height; // Altura em cm
+
+    @Column(name = "width", nullable = false)
+    private double width; // Largura em cm
+
+    @Column(name = "length", nullable = false)
+    private double length; // Comprimento em cm
+
+    @Column(name = "weight", nullable = false)
+    private double weight; // Peso em kg
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive; // Ativo/Inativo
+
+    @Column(name = "seo_description", length = 255)
+    private String seoDescription; // Descrição Resumida para SEO
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -110,5 +128,53 @@ public class Product {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public void setLength(double length) {
+        this.length = length;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public String getSeoDescription() {
+        return seoDescription;
+    }
+
+    public void setSeoDescription(String seoDescription) {
+        this.seoDescription = seoDescription;
     }
 }
