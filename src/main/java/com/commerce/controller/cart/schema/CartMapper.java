@@ -5,6 +5,7 @@ import com.commerce.model.session.Cart;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,12 @@ public interface CartMapper {
     }
 
     record GetCart(
-            List<GetCartItem> items
+            List<GetCartItem> items,
+            BigDecimal shippingValue,
+            BigDecimal totalProductValue,
+            BigDecimal totalValue,
+            boolean isShippingValid,
+            String deliveryTime
     ) {
     }
 

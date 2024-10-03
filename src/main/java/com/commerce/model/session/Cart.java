@@ -4,6 +4,7 @@ import com.commerce.controller.product.schema.ProductMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +12,11 @@ import java.util.Map;
 @SessionScope
 public class Cart {
     private Map<ProductMapper.GetProduct, Integer> items = new HashMap<>();
+    private BigDecimal shippingValue = BigDecimal.ZERO;
+    private BigDecimal totalValue = BigDecimal.ZERO;
+    private BigDecimal totalProductValue = BigDecimal.ZERO;
+    private boolean isShippingValid = false;
+    private String deliveryTime;
 
     public Map<ProductMapper.GetProduct, Integer> getItems() {
         return items;
@@ -34,4 +40,44 @@ public class Cart {
         }
     }
 
+    public BigDecimal getShippingValue() {
+        return shippingValue;
+    }
+
+    public void setShippingValue(BigDecimal shippingValue) {
+        this.shippingValue = shippingValue;
+    }
+
+    public BigDecimal getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(BigDecimal totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public boolean getIsShippingValid() {
+        return isShippingValid;
+    }
+
+    public void setShippingValid(boolean shippingValid) {
+        System.out.println("----> "+shippingValid);
+        isShippingValid = shippingValid;
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
+
+    public BigDecimal getTotalProductValue() {
+        return totalProductValue;
+    }
+
+    public void setTotalProductValue(BigDecimal totalProductValue) {
+        this.totalProductValue = totalProductValue;
+    }
 }

@@ -1,4 +1,10 @@
-<div class="container mt-4">
+<div th:if="${cart.items.size() == 0}" class="container text-center mt-5">
+    <h3>Carrinho Vazio</h3>
+    <p>Seu carrinho de compras está vazio. Adicione produtos para continuar.</p>
+    <a href="/" class="btn btn-primary">Ir para a Página Inicial</a>
+</div>
+
+<div th:if="${cart.items.size() > 0}" class="container mt-4">
     <!-- Carrinho de Compras -->
     <div class="row">
         <!-- Lista de Produtos no Carrinho -->
@@ -18,9 +24,10 @@
                 <tr th:each="item : ${cart.items}">
                     <td th:text="${item.product.name}">Produto 1</td>
                     <td style="width: 100px;">
-                        <input type="text" class="form-control quantity-input" th:value="${item.quantity}" data-product-id="${item.product.id}">
+                        <input type="text" class="form-control quantity-input" th:value="${item.quantity}"
+                               th:data-product-id="${item.product.id}"> <!-- Aqui usamos th:data-product-id corretamente -->
                     </td>
-                    <td th:text="'R$ ' + ${item.product.price}">R$ 0,00</td> <!-- Exibindo valor unitário -->
+                    <td th:text="'R$ ' + ${item.product.price}">R$ 0,00</td>
                     <td style="width: 50px;">
                         <button class="btn btn-danger btn-sm remove-product" th:data-product-id="${item.product.id}">
                             <i class="fas fa-times"></i>
@@ -33,7 +40,8 @@
             <!-- Calcular Frete -->
             <div class="form-inline mt-5"> <!-- Espaço maior entre a listagem de produtos e o cálculo de frete -->
                 <label for="cart-page-cep">CEP:</label>
-                <input type="text" class="form-control ml-2" id="cart-page-cep" placeholder="Digite o CEP" maxlength="9">
+                <input type="text" class="form-control ml-2" id="cart-page-cep" placeholder="Digite o CEP"
+                       maxlength="9">
                 <button class="btn btn-primary ml-2" id="cart-page-calculate-shipping">Calcular Frete</button>
             </div>
         </div>
@@ -42,35 +50,53 @@
         <div class="col-lg-4 col-12 mt-4 mt-lg-0">
             <h3>Resumo do Pedido</h3>
             <ul class="list-group">
-                <li class="list-group-item">Valor Total dos Produtos: <span id="cart-page-product-total">R$ 0,00</span></li>
-                <li class="list-group-item">Valor do Frete: <span id="cart-page-shipping-total">R$ 0,00</span></li>
-                <li class="list-group-item">Valor Total do Pedido: <span id="cart-page-order-total">R$ 0,00</span></li>
-                <li class="list-group-item">Prazo de Entrega: <span id="cart-page-delivery-time">-</span></li>
+                <li class="list-group-item">Valor Total dos Produtos: <span id="cart-page-product-total"
+                                                                            th:text="'R$ ' + ${cart.totalProductValue}">R$ 0,00</span>
+                </li>
+                <li class="list-group-item">Valor do Frete: <span id="cart-page-shipping-total"
+                                                                  th:text="'R$ ' + ${cart.shippingValue}">R$ 0,00</span>
+                </li>
+                <li class="list-group-item">Valor Total do Pedido: <span id="cart-page-order-total"
+                                                                         th:text="'R$ ' + ${cart.totalValue}">R$ 0,00</span>
+                </li>
+                <li class="list-group-item">Prazo de Entrega: <span id="cart-page-delivery-time"
+                                                                    th:text="${cart.isShippingValid ? cart.deliveryTime : '-'}">-</span>
+                </li>
             </ul>
-            <button class="btn btn-success mt-3 w-100">Finalizar Compra</button>
+
+            <!-- Botão "Finalizar Compra" -->
+            <button class="btn btn-success mt-3 w-100"
+                    th:disabled="${!cart.isShippingValid}"
+                    th:text="${cart.isShippingValid ? 'Finalizar Compra' : 'Calcular Frete para Finalizar'}">
+            </button>
         </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        function updateTotals() {
-            let productTotal = 0;
-            $('.quantity-input').each(function() {
-                const quantity = parseInt($(this).val(), 10);
-                const productPrice = parseFloat($(this).closest('tr').find('td:nth-child(3)').text().replace('R$ ', '').replace('.', '').replace(',', '.'));
-                const subtotal = productPrice * quantity;
-
-                productTotal += subtotal;
-            });
-            $('#cart-page-product-total').text('R$ ' + productTotal.toFixed(2).replace('.', ','));
-            // Aqui você pode adicionar lógica para calcular o frete e o total do pedido
-        }
-
         // Remover produto do carrinho
         $('.remove-product').on('click', function () {
             const productId = $(this).data('product-id');
             console.log('Remover produto com ID:', productId);
+            // Adicione aqui a lógica para remover o produto, se necessário
+            $.ajax({
+                url: '/carrinho-de-compras/remove/' + productId,
+                method: 'DELETE',
+                success: function (response) {
+                    // Recarregar a página em caso de sucesso
+                    location.reload();
+                },
+                error: function (xhr) {
+                    // Exibir alerta em caso de erro
+                    Swal.fire({
+                        title: 'Erro',
+                        text: 'Não foi possível remover o produto.',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                }
+            });
         });
 
         // Restringir campo quantidade para aceitar apenas números inteiros
@@ -84,11 +110,27 @@
             if (e.type === 'keypress' && e.which !== 13) {
                 return;
             }
-            const productId = $(this).data('product-id');
+            const productId = $(this).data('product-id'); // Aqui estamos capturando o ID do produto
             const quantity = parseInt($(this).val(), 10);
             if (!isNaN(quantity) && quantity > 0) {
                 console.log('Alterar quantidade do produto com ID:', productId, 'para:', quantity);
-                updateTotals(); // Chamar a função para atualizar os totais
+                $.ajax({
+                    url: '/carrinho-de-compras/update/' + productId + '?newQuantity=' + quantity,
+                    method: 'PUT',
+                    success: function (response) {
+                        // Recarregar a página em caso de sucesso
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        // Exibir alerta em caso de erro
+                        Swal.fire({
+                            title: 'Erro',
+                            text: 'Não foi possível alterar a quantidade. Remova o produto do carrinho e adicione novamente.',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                });
             } else {
                 Swal.fire({
                     title: 'Erro',
@@ -114,7 +156,26 @@
             const cep = $('#cart-page-cep').val().replace(/\D/g, '');
             if (cep.length === 8) {
                 console.log('CEP informado:', cep);
-                // Aqui você poderia chamar uma função para calcular o frete
+
+                // Requisição AJAX para calcular o frete
+                $.ajax({
+                    url: '/carrinho-de-compras/calculate-shipping',
+                    method: 'POST',
+                    data: { cep: cep },
+                    success: function (response) {
+                        // Recarregar a página em caso de sucesso
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        // Exibir alerta em caso de erro
+                        Swal.fire({
+                            title: 'Erro',
+                            text: 'Não foi possível calcular o frete. Verifique o CEP informado.',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                });
             } else {
                 Swal.fire({
                     title: 'Erro',
@@ -124,8 +185,5 @@
                 });
             }
         });
-
-        // Inicializar totais na primeira carga
-        updateTotals();
     });
 </script>

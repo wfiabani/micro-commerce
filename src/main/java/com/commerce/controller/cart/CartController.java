@@ -27,12 +27,10 @@ public class CartController {
     @GetMapping("/resumo")
     public String getCart(Model model) {
         Cart cart = cartManager.getCart();
-        System.out.println("Acessando o endpoint /resumo");
         model.addAttribute("cart", CartMapper.INSTANCE.toGetCart(cart));
         model.addAttribute("template", "cart/cart");
         return "layout";
     }
-
 
     @GetMapping("/get-items")
     @ResponseBody
@@ -85,4 +83,15 @@ public class CartController {
         return ResponseEntity.ok("Cart cleared successfully.");
     }
 
+
+    @PostMapping("/calculate-shipping")
+    @ResponseBody
+    public ResponseEntity<String> calculateShipping(@RequestParam String cep) {
+        try {
+            cartManager.calculateShipping(cep);
+            return ResponseEntity.ok("Shipping calculated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to calculate shipping: " + e.getMessage());
+        }
+    }
 }
