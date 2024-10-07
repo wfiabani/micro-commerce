@@ -22,6 +22,10 @@ public class CartManager {
     }
 
     public void addItem(ProductMapper.GetProduct product, Integer quantity) {
+        // Verifica se a quantidade solicitada é maior do que o estoque disponível
+        if (quantity > product.stock()) {
+            throw new IllegalArgumentException("A quantidade solicitada excede o estoque disponível.");
+        }
         cart.addItem(product, quantity);
         invalidateShipping();
         updateTotalValue();
@@ -31,6 +35,10 @@ public class CartManager {
         if (newQuantity <= 0) {
             removeItem(product);
         } else {
+            // Verifica se a quantidade solicitada é maior do que o estoque disponível
+            if (newQuantity > product.stock()) {
+                throw new IllegalArgumentException("A quantidade solicitada excede o estoque disponível.");
+            }
             cart.updateItemQuantity(product, newQuantity);
         }
         invalidateShipping();

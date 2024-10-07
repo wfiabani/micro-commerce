@@ -1,10 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1 th:text="${data.name}"></h1>
-</body>
-</html>
+<div th:if="!${data.active}" class="container text-center mt-5">
+    <h3>Produto Indisponível</h3>
+    <p>Este produto não está mais disponível para compra.</p>
+    <a href="/" class="btn btn-primary">Ir para a Página Inicial</a>
+</div>
+
+<div th:if="${data.active}" class="content container">
+    <div class="row">
+        <!-- Image Gallery -->
+        <div class="col-md-6">
+            <div id="productCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div th:each="image, stat : ${data.images}" th:class="${stat.index == 0} ? 'carousel-item active' : 'carousel-item'">
+                        <!-- Atualiza o caminho da imagem para apontar para a pasta 'product-images' dentro de 'static' -->
+                        <img th:src="@{/product-images/} + ${image.fileName}" th:alt="${image.name}" class="d-block w-100">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h2 th:text="${data.name}">Nome do Produto</h2>
+            <p th:text="${data.shortDescription}">Descrição curta do produto aqui.</p>
+            <p><strong>Categoria:</strong> <span th:text="${data.categoryName}">Nome da Categoria</span></p>
+            <p><strong>Preço:</strong> R$<span th:text="${data.price}">0.00</span></p>
+
+            <!-- Verificação se o produto está ativo -->
+            <div th:if="${data.active}">
+                <!-- Verificação se o produto está em estoque -->
+                <div th:if="${data.stock > 0}">
+                    <p><strong>Estoque:</strong> <span th:text="${data.stock}">Em estoque</span></p>
+
+                    <!-- Product Specifications -->
+                    <h4>Especificações</h4>
+                    <ul>
+                        <li><strong>Altura:</strong> <span th:text="${data.height}">0.0</span> cm</li>
+                        <li><strong>Largura:</strong> <span th:text="${data.width}">0.0</span> cm</li>
+                        <li><strong>Comprimento:</strong> <span th:text="${data.length}">0.0</span> cm</li>
+                        <li><strong>Peso:</strong> <span th:text="${data.weight}">0.0</span> kg</li>
+                    </ul>
+
+                    <!-- Quantity input and Add to Cart Button -->
+                    <div class="form-group">
+                        <label for="quantity">Quantidade:</label>
+                        <input type="number" id="quantity" class="form-control" value="1" min="1" max="[[${data.stock}]]">
+                    </div>
+                    <!-- Passa o productId dinamicamente usando Thymeleaf -->
+                    <button class="btn btn-success btn-lg" th:onclick="'addToCart(' + ${data.id} + ')'">Adicionar ao carrinho</button>
+                </div>
+
+                <!-- Mensagem quando o produto estiver fora de estoque -->
+                <div th:if="${data.stock == 0}">
+                    <p class="text-danger"><strong>Este produto não está em estoque.</strong></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Long Description -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Descrição</h3>
+            <p th:text="${data.longDescription}">Descrição longa do produto.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addToCart(productId) {
+        let quantity = $("#quantity").val();
+
+        // Envia a requisição POST via AJAX
+        $.ajax({
+            type: "POST",
+            url: "/carrinho-de-compras/add",
+            contentType: "application/json",
+            data: JSON.stringify({
+                productId: productId,
+                quantity: quantity
+            }),
+            success: function(response) {
+                // Redireciona para o resumo do carrinho em caso de sucesso
+                window.location.href = "/carrinho-de-compras/resumo";
+            },
+            error: function(error) {
+                // Exibe o alerta de erro em caso de falha
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Não foi possível adicionar o produto ao carrinho.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
+        });
+    }
+</script>

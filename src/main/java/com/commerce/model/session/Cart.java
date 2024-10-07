@@ -61,7 +61,6 @@ public class Cart {
     }
 
     public void setShippingValid(boolean shippingValid) {
-        System.out.println("----> "+shippingValid);
         isShippingValid = shippingValid;
     }
 
