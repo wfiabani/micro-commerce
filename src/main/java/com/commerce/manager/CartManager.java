@@ -22,27 +22,39 @@ public class CartManager {
     }
 
     public void addItem(ProductMapper.GetProduct product, Integer quantity) {
-        // Verifica se a quantidade solicitada é maior do que o estoque disponível
-        if (quantity > product.stock()) {
-            throw new IllegalArgumentException("A quantidade solicitada excede o estoque disponível.");
+        if (canAddProductToCart(product, quantity)) {
+            cart.addItem(product, quantity);
+            invalidateShipping();
+            updateTotalValue();
         }
-        cart.addItem(product, quantity);
-        invalidateShipping();
-        updateTotalValue();
     }
 
     public void updateItemQuantity(ProductMapper.GetProduct product, Integer newQuantity) {
         if (newQuantity <= 0) {
             removeItem(product);
-        } else {
-            // Verifica se a quantidade solicitada é maior do que o estoque disponível
-            if (newQuantity > product.stock()) {
-                throw new IllegalArgumentException("A quantidade solicitada excede o estoque disponível.");
-            }
+        } else if (canAddProductToCart(product, newQuantity)) {
             cart.updateItemQuantity(product, newQuantity);
+            invalidateShipping();
+            updateTotalValue();
         }
-        invalidateShipping();
-        updateTotalValue();
+    }
+
+    private boolean canAddProductToCart(ProductMapper.GetProduct product, Integer quantity) {
+        // Verifica se o produto está inativo
+        if (!product.active()) {
+            throw new IllegalArgumentException("Este produto não está disponível para compra.");
+        }
+
+        // Calcula a quantidade total do produto já no carrinho
+        Integer currentQuantity = cart.getItems().getOrDefault(product, 0);
+        Integer totalQuantity = currentQuantity + quantity;
+
+        // Verifica se a quantidade total solicitada é maior ou igual ao estoque disponível
+        if (totalQuantity > product.stock()) {
+            throw new IllegalArgumentException("A quantidade solicitada excede o estoque disponível.");
+        }
+
+        return true;
     }
 
     public void removeItem(ProductMapper.GetProduct product) {
