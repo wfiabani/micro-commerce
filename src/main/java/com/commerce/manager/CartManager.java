@@ -1,6 +1,8 @@
 package com.commerce.manager;
 
 import com.commerce.controller.product.schema.ProductMapper;
+import com.commerce.exception.InactiveProductException;
+import com.commerce.exception.InsufficientStockException;
 import com.commerce.model.session.Cart;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +24,9 @@ public class CartManager {
     }
 
     public void addItem(ProductMapper.GetProduct product, Integer quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
+        }
         if (canAddProductToCart(product, quantity)) {
             cart.addItem(product, quantity);
             invalidateShipping();
@@ -32,7 +37,7 @@ public class CartManager {
     public void updateItemQuantity(ProductMapper.GetProduct product, Integer newQuantity) {
         if (newQuantity <= 0) {
             removeItem(product);
-        } else if (canAddProductToCart(product, newQuantity)) {
+        } else if (canUpdateProductQuantity(product, newQuantity)) {
             cart.updateItemQuantity(product, newQuantity);
             invalidateShipping();
             updateTotalValue();
@@ -42,7 +47,7 @@ public class CartManager {
     private boolean canAddProductToCart(ProductMapper.GetProduct product, Integer quantity) {
         // Verifica se o produto está inativo
         if (!product.active()) {
-            throw new IllegalArgumentException("Este produto não está disponível para compra.");
+            throw new InactiveProductException("Este produto não está disponível para compra.");
         }
 
         // Calcula a quantidade total do produto já no carrinho
@@ -51,7 +56,21 @@ public class CartManager {
 
         // Verifica se a quantidade total solicitada é maior ou igual ao estoque disponível
         if (totalQuantity > product.stock()) {
-            throw new IllegalArgumentException("A quantidade solicitada excede o estoque disponível.");
+            throw new InsufficientStockException("A quantidade solicitada excede o estoque disponível.");
+        }
+
+        return true;
+    }
+
+    private boolean canUpdateProductQuantity(ProductMapper.GetProduct product, Integer quantity) {
+        // Verifica se o produto está inativo
+        if (!product.active()) {
+            throw new InactiveProductException("Este produto não está disponível para compra.");
+        }
+
+        // Verifica se a quantidade total solicitada é maior ou igual ao estoque disponível
+        if (quantity > product.stock()) {
+            throw new InsufficientStockException("A quantidade solicitada excede o estoque disponível.");
         }
 
         return true;

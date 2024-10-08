@@ -2,9 +2,13 @@ package com.commerce.controller.cart;
 
 import com.commerce.controller.cart.schema.CartMapper;
 import com.commerce.controller.product.schema.ProductMapper;
+import com.commerce.exception.InactiveProductException;
+import com.commerce.exception.InsufficientStockException;
+import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.CartManager;
 import com.commerce.manager.ProductManager;
 import com.commerce.model.session.Cart;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,9 +40,6 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<CartMapper.GetCart> getJSONCart() {
         Cart cart = cartManager.getCart();
-        if (cart == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
         var response = CartMapper.INSTANCE.toGetCart(cart);
         return ResponseEntity.ok(response);
     }
@@ -46,34 +47,45 @@ public class CartController {
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<String> addProductToCart(@RequestBody CartMapper.PostProductItem request) {
-        var product = productManager.getProduct(request.productId());
-        if (product == null) {
-            return ResponseEntity.badRequest().body("Product not found.");
+        try {
+            var product = productManager.getProduct(request.productId());
+            cartManager.addItem(ProductMapper.INSTANCE.toGetProduct(product), request.quantity());
+            return ResponseEntity.ok("Product added to cart successfully.");
+        } catch (InactiveProductException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InsufficientStockException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        cartManager.addItem(ProductMapper.INSTANCE.toGetProduct(product), request.quantity());
-        return ResponseEntity.ok("Product added to cart successfully.");
     }
 
     @PutMapping("/update/{productId}")
     @ResponseBody
     public ResponseEntity<String> updateProductQuantity(@PathVariable Long productId, @RequestParam int newQuantity) {
-        var product = productManager.getProduct(productId);
-        if (product == null) {
-            return ResponseEntity.badRequest().body("Product not found.");
+        try {
+            var product = productManager.getProduct(productId);
+            cartManager.updateItemQuantity(ProductMapper.INSTANCE.toGetProduct(product), newQuantity);
+            return ResponseEntity.ok("Product quantity updated successfully.");
+        } catch (InactiveProductException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InsufficientStockException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        cartManager.updateItemQuantity(ProductMapper.INSTANCE.toGetProduct(product), newQuantity);
-        return ResponseEntity.ok("Product quantity updated successfully.");
     }
 
     @DeleteMapping("/remove/{productId}")
     @ResponseBody
     public ResponseEntity<String> removeProductFromCart(@PathVariable Long productId) {
-        var product = productManager.getProduct(productId);
-        if (product == null) {
-            return ResponseEntity.badRequest().body("Product not found.");
+        try {
+            var product = productManager.getProduct(productId);
+            cartManager.removeItem(ProductMapper.INSTANCE.toGetProduct(product));
+            return ResponseEntity.ok("Product removed from cart successfully.");
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        cartManager.removeItem(ProductMapper.INSTANCE.toGetProduct(product));
-        return ResponseEntity.ok("Product removed from cart successfully.");
     }
 
     @DeleteMapping("/clear")
@@ -82,7 +94,6 @@ public class CartController {
         cartManager.clear();
         return ResponseEntity.ok("Cart cleared successfully.");
     }
-
 
     @PostMapping("/calculate-shipping")
     @ResponseBody
