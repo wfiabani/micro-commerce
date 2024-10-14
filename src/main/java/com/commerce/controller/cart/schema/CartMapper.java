@@ -31,7 +31,9 @@ public interface CartMapper {
             BigDecimal totalProductValue,
             BigDecimal totalValue,
             boolean isShippingValid,
-            String deliveryTime
+            String deliveryTime,
+            String postalCode, // Novo campo para o CEP
+            String shippingMethodName // Novo campo para o Nome do método de envio
     ) {
     }
 

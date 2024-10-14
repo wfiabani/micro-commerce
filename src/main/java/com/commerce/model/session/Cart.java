@@ -18,6 +18,10 @@ public class Cart {
     private boolean isShippingValid = false;
     private String deliveryTime;
 
+    // Novos campos
+    private String postalCode; // Alterado de cep para postalCode
+    private String shippingMethodName;
+
     public Map<ProductMapper.GetProduct, Integer> getItems() {
         return items;
     }
@@ -78,5 +82,22 @@ public class Cart {
 
     public void setTotalProductValue(BigDecimal totalProductValue) {
         this.totalProductValue = totalProductValue;
+    }
+
+    // Novos getters e setters para postalCode e método de envio
+    public String getPostalCode() { // Alterado para getPostalCode
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) { // Alterado para setPostalCode
+        this.postalCode = postalCode;
+    }
+
+    public String getShippingMethodName() {
+        return shippingMethodName;
+    }
+
+    public void setShippingMethodName(String shippingMethodName) {
+        this.shippingMethodName = shippingMethodName;
     }
 }

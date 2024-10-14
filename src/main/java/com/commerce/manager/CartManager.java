@@ -113,7 +113,9 @@ public class CartManager {
     public void calculateShipping(String postalCode) {
         BigDecimal calculatedShippingValue = new BigDecimal("15.00");
         cart.setShippingValue(calculatedShippingValue);
-        cart.setDeliveryTime("5 days");
+        cart.setPostalCode(postalCode);
+        cart.setShippingMethodName("PAC - Correios");
+        cart.setDeliveryTime("5 dias");
         cart.setShippingValid(true);
         updateTotalValue();
     }

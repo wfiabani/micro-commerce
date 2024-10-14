@@ -1,8 +1,110 @@
-<div class="container text-center mt-5">
+<div th:if="!${cart.isShippingValid}" class="container text-center mt-5">
     <h3>Carrinho Vazio</h3>
-    <p>Seu carrinho de compras está vazio, adicione alguns produtos para efetuar sua compra.</p>
+    <p>Seu carrinho de compras está vazio. Adicione produtos para continuar.</p>
     <a href="/" class="btn btn-primary">Ir para a Página Inicial</a>
 </div>
 
-<div  class="content container">
+<div th:if="${cart.isShippingValid}" class="container">
+    <!-- Resumo do Pedido -->
+    <h3>Resumo do Pedido</h3>
+    <div class="order-summary">
+        <p><strong>CEP de Entrega:</strong> <span th:text="${cart.postalCode}">00000-000</span></p> <!-- Alterado para postalCode -->
+        <p><strong>Método de Envio:</strong> <span th:text="${cart.shippingMethodName}">Método não especificado</span></p> <!-- Novo campo para método de envio -->
+        <p><strong>Valor dos Produtos:</strong> R$ <span th:text="${cart.totalProductValue}">0.00</span></p>
+        <p><strong>Valor do Frete:</strong> R$ <span th:text="${cart.shippingValue}">0.00</span></p>
+        <p><strong>Valor Total:</strong> R$ <span th:text="${cart.totalValue}">0.00</span></p>
+        <p><strong>Prazo de Entrega:</strong> <span th:text="${cart.deliveryTime}">Indisponível</span></p>
+    </div>
+
+    <!-- Formulário para Dados da Nota Fiscal -->
+    <h4 class="mt-4">Dados para Emissão da Nota Fiscal</h4>
+    <form id="invoice-form" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="fullName">Nome Completo</label>
+            <input type="text" class="form-control" id="fullName" name="fullName" required>
+            <div class="invalid-feedback">Por favor, insira seu nome completo.</div>
+        </div>
+        <div class="form-group">
+            <label for="cpf">CPF</label>
+            <input type="text" class="form-control" id="cpf" name="cpf" required>
+            <div class="invalid-feedback">Por favor, insira um CPF válido.</div>
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+        </div>
+    </form>
+
+    <!-- Formulário de Endereço de Entrega -->
+    <h4 class="mt-4">Endereço de Entrega</h4>
+    <form id="delivery-address-form" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="postalCode">CEP</label> <!-- Alterado para postalCode -->
+            <input type="text" class="form-control" id="postalCode" name="postalCode" readonly th:value="${cart.postalCode}"> <!-- Alterado para postalCode -->
+        </div>
+        <div class="form-group">
+            <label for="street">Rua</label>
+            <input type="text" class="form-control" id="street" name="street" required>
+            <div class="invalid-feedback">Por favor, insira o nome da rua.</div>
+        </div>
+        <div class="form-group">
+            <label for="number">Número</label>
+            <input type="text" class="form-control" id="number" name="number" required>
+            <div class="invalid-feedback">Por favor, insira o número da residência.</div>
+        </div>
+        <div class="form-group">
+            <label for="city">Cidade</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+            <div class="invalid-feedback">Por favor, insira o nome da cidade.</div>
+        </div>
+        <div class="form-group">
+            <label for="state">Estado</label>
+            <select class="form-control" id="state" name="state" required>
+                <option value="">Selecione um estado</option>
+                <option value="SP">São Paulo</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="MG">Minas Gerais</option>
+                <!-- Outros estados -->
+            </select>
+            <div class="invalid-feedback">Por favor, selecione o estado.</div>
+        </div>
+    </form>
+
+    <button type="submit" class="btn btn-success mt-4" onclick="validateForms()">Confirmar Pedido</button>
 </div>
+
+<script>
+    // Validações dos formulários
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Pega todos os formulários que precisam de validação
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    // Função para validar os dois formulários antes de prosseguir
+    function validateForms() {
+        const invoiceForm = document.getElementById('invoice-form');
+        const addressForm = document.getElementById('delivery-address-form');
+
+        if (invoiceForm.checkValidity() && addressForm.checkValidity()) {
+            alert('Pedido confirmado com sucesso!');
+            // Aqui você pode adicionar a lógica para enviar os dados do pedido
+        } else {
+            // Se os formulários não forem válidos, ativa a validação visual
+            invoiceForm.classList.add('was-validated');
+            addressForm.classList.add('was-validated');
+        }
+    }
+</script>
