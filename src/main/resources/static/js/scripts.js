@@ -1,3 +1,7 @@
+
+
+
+
 $(document).ready(function() {
     console.log("O DOM foi completamente carregado!");
 

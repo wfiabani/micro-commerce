@@ -82,15 +82,19 @@
         // Envia a requisição POST via AJAX
         $.ajax({
             type: "POST",
-            url: "/carrinho-de-compras/add",
+            url: "/shopping-cart/add",
             contentType: "application/json",
             data: JSON.stringify({
                 productId: productId,
                 quantity: quantity
             }),
             success: function(response) {
-                // Redireciona para o resumo do carrinho em caso de sucesso
-                window.location.href = "/carrinho-de-compras/resumo";
+                Swal.fire({
+                    title: 'Produto adicionado!',
+                    text: 'Produto adicionado com sucesso ao carrinho de compras',
+                    icon: 'success',
+                    confirmButtonText: 'Continuar Comprando'
+                });
             },
             error: function(error) {
                 // Exibe o alerta de erro em caso de falha

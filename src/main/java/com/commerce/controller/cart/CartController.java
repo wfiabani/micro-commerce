@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("carrinho-de-compras")
+@RequestMapping("shopping-cart")
 @Validated
 public class CartController {
 
@@ -28,7 +28,7 @@ public class CartController {
         this.productManager = productManager;
     }
 
-    @GetMapping("/resumo")
+    @GetMapping("/summary")
     public String getCart(Model model) {
         Cart cart = cartManager.getCart();
         model.addAttribute("cart", CartMapper.INSTANCE.toGetCart(cart));

@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- SDK MercadoPago.js -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
     <!-- Bootstrap CSS via CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -27,9 +30,8 @@
     <script src="/js/scripts.js"></script>
 </head>
 <body>
-<header class="container">
-    <h1 class="animate__animated animate__fadeIn">Header <i class="fas fa-shopping-cart"></i></h1>
-</header>
+
+<div th:replace="header"></div>
 
 <div class="content container">
     <div th:replace="${template}"></div>
@@ -42,12 +44,7 @@
 <script>
     // Exemplo de uso de SweetAlert2
     $(document).ready(function() {
-        Swal.fire({
-            title: 'Bem-vindo!',
-            text: 'Aproveite sua experiência de compra!',
-            icon: 'success',
-            confirmButtonText: 'Obrigado'
-        });
+
     });
 </script>
 </body>

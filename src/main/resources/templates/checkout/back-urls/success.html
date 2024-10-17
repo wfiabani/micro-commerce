@@ -1,0 +1,12 @@
+<script>
+    Swal.fire({
+      title: 'Pagamento confirmado!',
+      text: "Recebemos seu pagamento! Acompanhe as atualizações de sua compra via e-mail e Whatsapp",
+      icon: 'info',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        parent.location = "/";
+      }
+    });
+</script>

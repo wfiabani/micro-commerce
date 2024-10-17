@@ -5,9 +5,9 @@ spring:
   application:
     name: commerce
   datasource:
-    url: jdbc:postgresql://localhost:5432/commerce
-    username: postgres
-    password: postgress
+    url: ${PG_DATASOURCE_URL}
+    username: ${PG_DATASOURCE_USERNAME}
+    password: ${PG_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -18,3 +18,15 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: update
+javax:
+  persistence:
+    validation:
+      mode=auto:
+
+# custom fields
+custom:
+  MP_PUBLIC_KEY: ${MP_PUBLIC_KEY}
+  MP_ACCESS_TOKEN: ${MP_ACCESS_TOKEN}
+  MP_CLIENT_ID: ${MP_CLIENT_ID}
+  MP_CLIENT_SECRET: ${MP_CLIENT_SECRET}
+  SITE_BASEURL: "https://paibenedito.com.br"

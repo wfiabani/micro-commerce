@@ -1,0 +1,102 @@
+
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .cart-button {
+            position: relative;
+            color: #333;
+            font-size: 20px;
+        }
+        .cart-button .item-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 12px;
+        }
+        .nav-menu {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background-color: #e9ecef;
+            border-top: 1px solid #dee2e6;
+            overflow-x: auto; /* Permitir rolagem horizontal */
+            white-space: nowrap; /* Impede a quebra de linha */
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px;
+        }
+        .mobile-menu {
+            display: none; /* Oculta o menu mobile por padrão */
+            position: absolute;
+            top: 60px; /* Posiciona abaixo do header */
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .mobile-menu a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block; /* Mostra o menu mobile em telas pequenas */
+            }
+        }
+    </style>
+
+<header class="header">
+    <div class="menu-icon" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+    <div class="logo">Logo</div>
+    <div class="cart-button">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="item-count" id="itemCount">3</span>
+    </div>
+</header>
+
+<nav class="nav-menu">
+    <a href="#">Home</a>
+    <a href="/product/2/teste-dos-testes">Produtos</a>
+    <a href="/shopping-cart/summary">Carrinho de Compras</a>
+    <a href="/pedido/detalhes-do-pedido">Checkout</a>
+</nav>
+
+<!-- Menu Mobile -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#">Home</a>
+    <a href="/product/2/teste-dos-testes">Produtos</a>
+    <a href="/shopping-cart/summary">Carrinho de Compras</a>
+    <a href="/pedido/detalhes-do-pedido">Checkout</a>
+</div>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuToggle.addEventListener('click', function() {
+        mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block'; // Alterna a exibição do menu
+    });
+</script>
+

@@ -40,30 +40,29 @@ public class Product {
     private List<Image> images;
 
     @Column(name = "height", nullable = false)
-    private double height; // Altura em cm
+    private double height;
 
     @Column(name = "width", nullable = false)
-    private double width; // Largura em cm
+    private double width;
 
     @Column(name = "length", nullable = false)
-    private double length; // Comprimento em cm
+    private double length;
 
     @Column(name = "weight", nullable = false)
-    private double weight; // Peso em kg
+    private double weight;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive; // Ativo/Inativo
+    private boolean isActive;
 
     @Column(name = "seo_description", length = 255)
-    private String seoDescription; // Descrição Resumida para SEO
+    private String seoDescription;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CustomerOrderItem> items;
 
     // Getters e Setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getProductId() {

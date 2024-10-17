@@ -1,0 +1,10 @@
+<!-- Resumo do Pedido -->
+<h3>Resumo do Pedido</h3>
+<div class="order-summary" style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; background-color: #f8f9fa;">
+    <p><strong>CEP de Entrega:</strong> <span th:text="${cart.postalCode}">00000-000</span></p>
+    <p><strong>Método de Envio:</strong> <span th:text="${cart.shippingMethodName}">Método não especificado</span></p>
+    <p><strong>Valor dos Produtos:</strong> R$ <span th:text="${cart.totalProductValue}">0.00</span></p>
+    <p><strong>Valor do Frete:</strong> R$ <span th:text="${cart.shippingValue}">0.00</span></p>
+    <p><strong>Valor Total:</strong> R$ <span th:text="${cart.totalValue}">0.00</span></p>
+    <p><strong>Prazo de Entrega:</strong> <span th:text="${cart.deliveryTime}">Indisponível</span></p>
+</div>
