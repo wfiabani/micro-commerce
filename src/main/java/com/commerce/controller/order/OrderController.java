@@ -5,6 +5,7 @@ import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.CartManager;
 import com.commerce.model.session.Cart;
 import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
@@ -32,6 +33,9 @@ public class OrderController {
     @Value("${custom.MP_ACCESS_TOKEN}")
     private String mpAccessToken;
 
+    @Value("${custom.SITE_BASEURL}")
+    private String siteBaseurl;
+
     public OrderController(CartManager cartManager) {
         this.cartManager = cartManager;
     }
@@ -58,9 +62,19 @@ public class OrderController {
                             .build();
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
+
+            PreferenceBackUrlsRequest backUrls =
+// ...
+                    PreferenceBackUrlsRequest.builder()
+                            .success(siteBaseurl+"/pedido/success")
+                            .pending(siteBaseurl+"/pedido/pending")
+                            .failure(siteBaseurl+"/pedido/failure")
+                            .build();
+
             // Criando a solicitação de preferência
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
+                    .backUrls(backUrls)
                     .build();
 
             // Criando o cliente de preferência e enviando a solicitação
@@ -90,6 +104,24 @@ public class OrderController {
     @ResponseBody
     public void handleWebhook(@RequestBody String payload) {
         System.out.println("Recebido webhook: " + payload);
+    }
+
+    @GetMapping("/success")
+    @ResponseBody
+    public void handleWebhookSuccess(@RequestBody String payload, Model model) {
+        System.out.println("Recebido callback success: " + payload);
+    }
+
+    @GetMapping("/pending")
+    @ResponseBody
+    public void handleWebhookPending(@RequestBody String payload, Model model) {
+        System.out.println("Recebido callback pending: " + payload);
+    }
+
+    @GetMapping("/failure")
+    @ResponseBody
+    public void handleWebhookFailure(@RequestBody String payload, Model model) {
+        System.out.println("Recebido callback failure: " + payload);
     }
 
 
