@@ -120,7 +120,33 @@ public class OrderController {
 
     @GetMapping("/failure")
     @ResponseBody
-    public void handleWebhookFailure(@RequestBody String payload, Model model) {
+    public void handleWebhookFailure(@RequestBody String payload,
+                                     Model model,
+                                     @RequestParam(value = "collection_id", required = false) String collectionId,
+                                     @RequestParam(value = "collection_status", required = false) String collectionStatus,
+                                     @RequestParam(value = "payment_id", required = false) String paymentId,
+                                     @RequestParam(value = "status", required = false) String status,
+                                     @RequestParam(value = "external_reference", required = false) String externalReference,
+                                     @RequestParam(value = "payment_type", required = false) String paymentType,
+                                     @RequestParam(value = "merchant_order_id", required = false) String merchantOrderId,
+                                     @RequestParam(value = "preference_id", required = false) String preferenceId,
+                                     @RequestParam(value = "site_id", required = false) String siteId,
+                                     @RequestParam(value = "processing_mode", required = false) String processingMode,
+                                     @RequestParam(value = "merchant_account_id", required = false) String merchantAccountId
+    ) {
+
+        System.out.println("Collection ID: " + collectionId);
+        System.out.println("Collection Status: " + collectionStatus);
+        System.out.println("Payment ID: " + paymentId);
+        System.out.println("Status: " + status);
+        System.out.println("External Reference: " + externalReference);
+        System.out.println("Payment Type: " + paymentType);
+        System.out.println("Merchant Order ID: " + merchantOrderId);
+        System.out.println("Preference ID: " + preferenceId);
+        System.out.println("Site ID: " + siteId);
+        System.out.println("Processing Mode: " + processingMode);
+        System.out.println("Merchant Account ID: " + merchantAccountId);
+
         System.out.println("Recebido callback failure: " + payload);
     }
 
