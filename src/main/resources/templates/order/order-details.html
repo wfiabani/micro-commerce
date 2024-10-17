@@ -74,6 +74,8 @@
     <button type="submit" class="btn btn-success mt-4" onclick="validateForms()">Confirmar Pedido</button>
 </div>
 
+<div id="wallet_container"></div>
+
 <script>
     // Validações dos formulários
     (function () {
@@ -107,4 +109,21 @@
             addressForm.classList.add('was-validated');
         }
     }
+
+    const mp = new MercadoPago('[[${mpPublicKey}]]');
+    const bricksBuilder = mp.bricks();
+
+    const preferenceId = '[[${preferenceId}]]';
+    mp.bricks().create("wallet", "wallet_container", {
+       initialization: {
+           preferenceId: preferenceId,
+       },
+    customization: {
+     texts: {
+      valueProp: 'smart_option',
+     },
+     },
+    });
+
+
 </script>
