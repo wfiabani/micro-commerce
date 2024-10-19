@@ -68,7 +68,7 @@
             </ul>
 
             <!-- Botão "Finalizar Compra" -->
-            <button class="btn btn-success mt-3 w-100"
+            <button id="btn-checkout" class="btn btn-success mt-3 w-100"
                     th:disabled="${!cart.isShippingValid}"
                     th:text="${cart.isShippingValid ? 'Finalizar Compra' : 'Calcular Frete para Finalizar'}">
             </button>
@@ -84,7 +84,7 @@
             console.log('Remover produto com ID:', productId);
             // Adicione aqui a lógica para remover o produto, se necessário
             $.ajax({
-                url: '/carrinho-de-compras/remove/' + productId,
+                url: '/shopping-cart/remove/' + productId,
                 method: 'DELETE',
                 success: function (response) {
                     // Recarregar a página em caso de sucesso
@@ -118,7 +118,7 @@
             if (!isNaN(quantity) && quantity > 0) {
                 console.log('Alterar quantidade do produto com ID:', productId, 'para:', quantity);
                 $.ajax({
-                    url: '/carrinho-de-compras/update/' + productId + '?newQuantity=' + quantity,
+                    url: '/shopping-cart/update/' + productId + '?newQuantity=' + quantity,
                     method: 'PUT',
                     success: function (response) {
                         // Recarregar a página em caso de sucesso
@@ -162,7 +162,7 @@
 
                 // Requisição AJAX para calcular o frete
                 $.ajax({
-                    url: '/carrinho-de-compras/calculate-shipping',
+                    url: '/shopping-cart/calculate-shipping',
                     method: 'POST',
                     data: { cep: cep },
                     success: function (response) {
@@ -188,5 +188,12 @@
                 });
             }
         });
+
+        $('#btn-checkout').on('click', function () {
+            if (!$(this).is(':disabled')) {
+                window.location.href = '/pedido/detalhes-do-pedido';
+            }
+        });
+
     });
 </script>

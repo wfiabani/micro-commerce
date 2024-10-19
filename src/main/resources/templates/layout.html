@@ -30,9 +30,8 @@
     <script src="/js/scripts.js"></script>
 </head>
 <body>
-<header class="container">
-    <h1 class="animate__animated animate__fadeIn">Header <i class="fas fa-shopping-cart"></i></h1>
-</header>
+
+<div th:replace="header"></div>
 
 <div class="content container">
     <div th:replace="${template}"></div>
@@ -45,12 +44,7 @@
 <script>
     // Exemplo de uso de SweetAlert2
     $(document).ready(function() {
-        Swal.fire({
-            title: 'Bem-vindo!',
-            text: 'Aproveite sua experiência de compra!',
-            icon: 'success',
-            confirmButtonText: 'Obrigado'
-        });
+
     });
 </script>
 </body>

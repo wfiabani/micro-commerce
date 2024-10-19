@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 @Controller
 @RequestMapping("pedido")
 @Validated
@@ -43,12 +44,19 @@ public class OrderController {
     @Value("${custom.SITE_BASEURL}")
     private String siteBaseurl;
 
+    @Value("${spring.profiles.active:default}")
+    private String activeProfile;
+
     public OrderController(CartManager cartManager) {
         this.cartManager = cartManager;
     }
 
     @GetMapping("/detalhes-do-pedido")
     public String getOrderForm(Model model) {
+
+        if(activeProfile=="default"){
+            return "";
+        }
 
         try {
 
