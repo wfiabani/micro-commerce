@@ -5,10 +5,7 @@ import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.CartManager;
 import com.commerce.model.session.Cart;
 import com.mercadopago.MercadoPagoConfig;
-import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
-import com.mercadopago.client.preference.PreferenceClient;
-import com.mercadopago.client.preference.PreferenceItemRequest;
-import com.mercadopago.client.preference.PreferenceRequest;
+import com.mercadopago.client.preference.*;
 import com.mercadopago.resources.preference.Preference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -83,10 +80,18 @@ public class OrderController {
                             .failure(siteBaseurl+"/pedido/failure")
                             .build();
 
+
+            // Cria o objeto de frete
+            PreferenceShipmentsRequest shipments = PreferenceShipmentsRequest.builder().
+                    cost(new BigDecimal(3.21)).build();
+
+
+
             // Criando a solicitação de preferência
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrls)
+                    .shipments(shipments)
                     .build();
 
             // Criando o cliente de preferência e enviando a solicitação
