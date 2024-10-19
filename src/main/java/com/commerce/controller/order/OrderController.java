@@ -4,6 +4,8 @@ import com.commerce.controller.cart.schema.CartMapper;
 import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.CartManager;
 import com.commerce.model.session.Cart;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -21,7 +23,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -133,39 +134,78 @@ public class OrderController {
     @ResponseBody
     public void handleWebhook(
             @RequestBody String payload,
-            @RequestHeader("x-signature") String signature
+            @RequestHeader("x-signature") String signatureHeader,
+            @RequestHeader("x-request-id") String requestId
     ) {
         try {
-            // Verifica a assinatura recebida
-            if (verifySignature(payload, signature, mpClientSecret)) {
+            // Extrai os componentes da assinatura recebida (ts e v1)
+            String[] signatureParts = signatureHeader.split(",");
+            String ts = null;
+            String receivedSignature = null;
+
+            for (String part : signatureParts) {
+                String[] keyValue = part.split("=", 2);
+                if (keyValue.length == 2) {
+                    if (keyValue[0].trim().equals("ts")) {
+                        ts = keyValue[1].trim();
+                    } else if (keyValue[0].trim().equals("v1")) {
+                        receivedSignature = keyValue[1].trim();
+                    }
+                }
+            }
+
+            // Se não houver timestamp ou assinatura, falha
+            if (ts == null || receivedSignature == null) {
+                System.out.println("Assinatura inválida: falta ts ou v1");
+                return;
+            }
+
+            // Verifica a assinatura
+            if (verifySignature(payload, ts, requestId, receivedSignature, mpClientSecret)) {
                 System.out.println("Assinatura válida");
+                System.out.println("Recebido webhook: " + payload);
             } else {
                 System.out.println("Assinatura inválida");
-                return; // Se a assinatura for inválida, você pode retornar uma resposta de erro ou finalizar o processamento aqui.
             }
-            
-            System.out.println("Recebido webhook: " + payload);
 
         } catch (Exception e) {
             System.out.println("Erro ao verificar assinatura: " + e.getMessage());
         }
     }
 
-    // Método para verificar a assinatura
-    private boolean verifySignature(String payload, String signatureHeader, String secretKey) throws Exception {
-        // 1. Configurar o HMAC SHA-256 usando a chave secreta
+    private boolean verifySignature(String payload, String ts, String requestId, String receivedSignature, String secretKey) throws Exception {
+        // Monta o template conforme especificação
+        String template = "id:" + extractDataIdFromPayload(payload) + ";request-id:" + requestId + ";ts:" + ts + ";";
+
+        // Configura o HMAC SHA-256 usando a chave secreta
         Mac hmacSha256 = Mac.getInstance("HmacSHA256");
         SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         hmacSha256.init(secretKeySpec);
 
-        // 2. Calcular o HMAC do payload (corpo da requisição)
-        byte[] hash = hmacSha256.doFinal(payload.getBytes(StandardCharsets.UTF_8));
+        // Calcula o HMAC do template
+        byte[] hash = hmacSha256.doFinal(template.getBytes(StandardCharsets.UTF_8));
 
-        // 3. Codificar o hash gerado em base64
-        String calculatedSignature = Base64.getEncoder().encodeToString(hash);
+        // Converte o hash em formato hexadecimal
+        String calculatedSignature = bytesToHex(hash);
 
-        // 4. Comparar a assinatura gerada com a recebida no cabeçalho
-        return calculatedSignature.equals(signatureHeader);
+        // Compara a assinatura calculada com a recebida
+        return calculatedSignature.equals(receivedSignature);
+    }
+
+    private String extractDataIdFromPayload(String payload) {
+        // Extrai o "data.id" do payload, adaptando conforme sua estrutura de JSON
+        // Exemplo simplificado:
+        JsonObject jsonObject = JsonParser.parseString(payload).getAsJsonObject();
+        return jsonObject.getAsJsonObject("data").get("id").getAsString();
+    }
+
+    // Conversão de bytes para hexadecimal
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
 
