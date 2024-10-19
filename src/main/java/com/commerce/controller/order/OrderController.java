@@ -33,6 +33,12 @@ public class OrderController {
     @Value("${custom.MP_ACCESS_TOKEN}")
     private String mpAccessToken;
 
+    @Value("${custom.MP_CLIENT_SECRET}")
+    private String mpClientSecret;
+
+    @Value("${custom.MP_CLIENT_ID}")
+    private String mpClientId;
+
     @Value("${custom.SITE_BASEURL}")
     private String siteBaseurl;
 
@@ -48,6 +54,8 @@ public class OrderController {
             /*********************************************************/
             model.addAttribute("mpPublicKey", mpPublicKey);
             MercadoPagoConfig.setAccessToken(mpAccessToken);
+
+
 
             PreferenceItemRequest itemRequest =
                     PreferenceItemRequest.builder()
@@ -100,11 +108,59 @@ public class OrderController {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @PostMapping("/webhooks")
     @ResponseBody
-    public void handleWebhook(@RequestBody String payload) {
+    public void handleWebhook(
+            @RequestBody String payload,
+            @RequestHeader("x-signature") String signature
+    ) {
+        System.out.println("Signature: " + signature);
+        System.out.println("CLIENT_ID: "+mpClientId);
+        System.out.println("CLIENT_SECRET: "+mpClientSecret);
+        System.out.println("ACCESS_TOKEN: "+mpAccessToken);
+        System.out.println("PUBLIC_KEY: "+mpPublicKey);
+
         System.out.println("Recebido webhook: " + payload);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @GetMapping("/success")
     @ResponseBody
