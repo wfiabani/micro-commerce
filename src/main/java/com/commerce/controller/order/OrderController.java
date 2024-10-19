@@ -16,8 +16,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -131,13 +135,37 @@ public class OrderController {
             @RequestBody String payload,
             @RequestHeader("x-signature") String signature
     ) {
-        System.out.println("Signature: " + signature);
-        System.out.println("CLIENT_ID: "+mpClientId);
-        System.out.println("CLIENT_SECRET: "+mpClientSecret);
-        System.out.println("ACCESS_TOKEN: "+mpAccessToken);
-        System.out.println("PUBLIC_KEY: "+mpPublicKey);
+        try {
+            // Verifica a assinatura recebida
+            if (verifySignature(payload, signature, mpClientSecret)) {
+                System.out.println("Assinatura válida");
+            } else {
+                System.out.println("Assinatura inválida");
+                return; // Se a assinatura for inválida, você pode retornar uma resposta de erro ou finalizar o processamento aqui.
+            }
+            
+            System.out.println("Recebido webhook: " + payload);
 
-        System.out.println("Recebido webhook: " + payload);
+        } catch (Exception e) {
+            System.out.println("Erro ao verificar assinatura: " + e.getMessage());
+        }
+    }
+
+    // Método para verificar a assinatura
+    private boolean verifySignature(String payload, String signatureHeader, String secretKey) throws Exception {
+        // 1. Configurar o HMAC SHA-256 usando a chave secreta
+        Mac hmacSha256 = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        hmacSha256.init(secretKeySpec);
+
+        // 2. Calcular o HMAC do payload (corpo da requisição)
+        byte[] hash = hmacSha256.doFinal(payload.getBytes(StandardCharsets.UTF_8));
+
+        // 3. Codificar o hash gerado em base64
+        String calculatedSignature = Base64.getEncoder().encodeToString(hash);
+
+        // 4. Comparar a assinatura gerada com a recebida no cabeçalho
+        return calculatedSignature.equals(signatureHeader);
     }
 
 
@@ -205,6 +233,16 @@ public class OrderController {
 
         System.out.println("Recebido callback failure: " + payload);
     }
+
+
+
+
+
+
+
+
+
+
 
 
 }
