@@ -66,7 +66,7 @@ public class OrderController {
                             .categoryId("games")
                             .quantity(2)
                             .currencyId("BRL")
-                            .unitPrice(new BigDecimal("4000"))
+                            .unitPrice(new BigDecimal("4"))
                             .build();
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
