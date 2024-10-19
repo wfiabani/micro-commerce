@@ -57,7 +57,6 @@ public class OrderController {
             MercadoPagoConfig.setAccessToken(mpAccessToken);
 
 
-
             PreferenceItemRequest itemRequest =
                     PreferenceItemRequest.builder()
                             .id("1234")
@@ -73,11 +72,10 @@ public class OrderController {
             items.add(itemRequest);
 
             PreferenceBackUrlsRequest backUrls =
-// ...
                     PreferenceBackUrlsRequest.builder()
-                            .success(siteBaseurl+"/pedido/success")
-                            .pending(siteBaseurl+"/pedido/pending")
-                            .failure(siteBaseurl+"/pedido/failure")
+                            .success(siteBaseurl + "/pedido/success")
+                            .pending(siteBaseurl + "/pedido/pending")
+                            .failure(siteBaseurl + "/pedido/failure")
                             .build();
 
 
@@ -85,13 +83,19 @@ public class OrderController {
             PreferenceShipmentsRequest shipments = PreferenceShipmentsRequest.builder().
                     cost(new BigDecimal(3.21)).build();
 
-
+            PreferencePayerRequest payer = PreferencePayerRequest.builder()
+                    .name("Wilian Fiabani")
+                    .email("fiabani.wilian@gmail.com")
+                    .build();
 
             // Criando a solicitação de preferência
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrls)
                     .shipments(shipments)
+                    .externalReference("<ID do pedido>")
+                    .additionalInfo("Informações adicionais")
+                    .payer(payer)
                     .build();
 
             // Criando o cliente de preferência e enviando a solicitação
@@ -116,27 +120,6 @@ public class OrderController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @PostMapping("/webhooks")
     @ResponseBody
     public void handleWebhook(
@@ -145,8 +128,6 @@ public class OrderController {
             @RequestHeader("x-request-id") String xRequestId,
             @RequestParam Map<String, String> queryParams
     ) {
-
-
 
 
         // Extrair data.id dos parâmetros da consulta
@@ -182,9 +163,9 @@ public class OrderController {
             if (calculatedHash.equals(hash)) {
                 // HMAC verification passed
                 System.out.println("Verificada assinatura");
-                System.out.println("Retorno webhook: "+payload);
+                System.out.println("Retorno webhook: " + payload);
             } else {
-                System.out.println("Retorno webhook: "+payload);
+                System.out.println("Retorno webhook: " + payload);
                 System.out.println("Falohu na verificação");
             }
         } catch (Exception e) {
@@ -210,29 +191,6 @@ public class OrderController {
         }
         return sb.toString();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @GetMapping("/success")
@@ -278,16 +236,6 @@ public class OrderController {
 
         System.out.println("Recebido callback failure: " + payload);
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }
