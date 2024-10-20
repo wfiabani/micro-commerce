@@ -1,13 +1,17 @@
 package com.commerce.controller.order;
 
 import com.commerce.controller.cart.schema.CartMapper;
-import com.commerce.exception.ProductNotFoundException;
+import com.commerce.controller.order.schema.CustomerOrderMapper;
+import com.commerce.exception.InvalidOrderException;
+import com.commerce.exception.OrderProcessingException;
 import com.commerce.manager.CartManager;
+import com.commerce.manager.CustomerOrderManager;
 import com.commerce.model.session.Cart;
-import com.mercadopago.MercadoPagoConfig;
-import com.mercadopago.client.preference.*;
-import com.mercadopago.resources.preference.Preference;
+import jakarta.validation.Valid;
+import org.apache.commons.beanutils.ConversionException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -15,19 +19,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
 @Controller
 @RequestMapping("pedido")
 @Validated
-public class OrderController {
+public class CustomerOrderController {
 
     private final CartManager cartManager;
+    private final CustomerOrderManager orderManager;
 
     @Value("${custom.MP_PUBLIC_KEY}")
     private String mpPublicKey;
@@ -47,84 +49,38 @@ public class OrderController {
     @Value("${spring.profiles.active:default}")
     private String activeProfile;
 
-    public OrderController(CartManager cartManager) {
+    public CustomerOrderController(CustomerOrderManager orderManager, CartManager cartManager) {
+        this.orderManager = orderManager;
         this.cartManager = cartManager;
     }
 
+    @PostMapping("/add")
+    @ResponseBody
+    public ResponseEntity<?> addCustomerOrder(@Valid @RequestBody CustomerOrderMapper.PostCustomerOrder request) {
+        try {
+            var customerOrder = orderManager.addCustomerOrder(request);
+            var data = CustomerOrderMapper.INSTANCE.toGetCustomerOrder(customerOrder);
+            System.out.println(data);
+            return ResponseEntity.ok(data);
+        } catch (InvalidOrderException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (OrderProcessingException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ConversionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Conversion error: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the order.");
+        }
+    }
+
+
     @GetMapping("/detalhes-do-pedido")
     public String getOrderForm(Model model) {
-
-        if(activeProfile=="default"){
-            return "";
-        }
-
-        try {
-
-            /*********************************************************/
-            model.addAttribute("mpPublicKey", mpPublicKey);
-            MercadoPagoConfig.setAccessToken(mpAccessToken);
-
-
-            PreferenceItemRequest itemRequest =
-                    PreferenceItemRequest.builder()
-                            .id("1234")
-                            .title("Games")
-                            .description("PS5")
-                            .pictureUrl("http://picture.com/PS5")
-                            .categoryId("games")
-                            .quantity(2)
-                            .currencyId("BRL")
-                            .unitPrice(new BigDecimal("4"))
-                            .build();
-            List<PreferenceItemRequest> items = new ArrayList<>();
-            items.add(itemRequest);
-
-            PreferenceBackUrlsRequest backUrls =
-                    PreferenceBackUrlsRequest.builder()
-                            .success(siteBaseurl + "/pedido/success")
-                            .pending(siteBaseurl + "/pedido/pending")
-                            .failure(siteBaseurl + "/pedido/failure")
-                            .build();
-
-
-            // Cria o objeto de frete
-            PreferenceShipmentsRequest shipments = PreferenceShipmentsRequest.builder().
-                    cost(new BigDecimal(3.21)).build();
-
-            PreferencePayerRequest payer = PreferencePayerRequest.builder()
-                    .name("Wilian Fiabani")
-                    .email("fiabani.wilian@gmail.com")
-                    .build();
-
-            // Criando a solicitação de preferência
-            PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                    .items(items)
-                    .backUrls(backUrls)
-                    .shipments(shipments)
-                    .externalReference("<ID do pedido>")
-                    .additionalInfo("Informações adicionais")
-                    .payer(payer)
-                    .build();
-
-            // Criando o cliente de preferência e enviando a solicitação
-            PreferenceClient client = new PreferenceClient();
-            Preference preference = client.create(preferenceRequest);  // Usar
-            model.addAttribute("preferenceId", preference.getId());
-            /*********************************************************/
-
-            Cart cart = cartManager.getCart();
-            var response = CartMapper.INSTANCE.toGetCart(cart);
-            model.addAttribute("cart", response);
-            model.addAttribute("template", "order/order-details");
-            return "layout";
-        } catch (ProductNotFoundException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "error/error"; // Redireciona para uma página de erro customizada
-        } catch (Exception e) {
-            System.out.println(e.toString());
-            model.addAttribute("errorMessage", e.getMessage());
-            return "error/error"; // Redireciona para uma página de erro customizada
-        }
+        Cart cart = cartManager.getCart();
+        var response = CartMapper.INSTANCE.toGetCart(cart);
+        model.addAttribute("cart", response);
+        model.addAttribute("template", "order/order-details");
+        return "layout";
     }
 
 

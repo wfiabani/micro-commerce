@@ -17,9 +17,7 @@ public class Cart {
     private BigDecimal totalProductValue = BigDecimal.ZERO;
     private boolean isShippingValid = false;
     private String deliveryTime;
-
-    // Novos campos
-    private String postalCode; // Alterado de cep para postalCode
+    private String postalCode;
     private String shippingMethodName;
 
     public Map<ProductMapper.GetProduct, Integer> getItems() {
@@ -84,12 +82,11 @@ public class Cart {
         this.totalProductValue = totalProductValue;
     }
 
-    // Novos getters e setters para postalCode e método de envio
-    public String getPostalCode() { // Alterado para getPostalCode
+    public String getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(String postalCode) { // Alterado para setPostalCode
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 

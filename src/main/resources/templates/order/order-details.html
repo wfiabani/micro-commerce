@@ -5,16 +5,7 @@
 </div>
 
 <div th:if="${cart.isShippingValid}" class="container">
-    <!-- Resumo do Pedido -->
-    <h3>Resumo do Pedido</h3>
-    <div class="order-summary" style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; background-color: #f8f9fa;">
-        <p><strong>CEP de Entrega:</strong> <span th:text="${cart.postalCode}">00000-000</span></p>
-        <p><strong>Método de Envio:</strong> <span th:text="${cart.shippingMethodName}">Método não especificado</span></p>
-        <p><strong>Valor dos Produtos:</strong> R$ <span th:text="${cart.totalProductValue}">0.00</span></p>
-        <p><strong>Valor do Frete:</strong> R$ <span th:text="${cart.shippingValue}">0.00</span></p>
-        <p><strong>Valor Total:</strong> R$ <span th:text="${cart.totalValue}">0.00</span></p>
-        <p><strong>Prazo de Entrega:</strong> <span th:text="${cart.deliveryTime}">Indisponível</span></p>
-    </div>
+    <div th:replace="order/cart-summary"></div>
 
     <!-- Formulários Lado a Lado -->
     <div class="row mt-4">
@@ -44,98 +35,81 @@
         <div class="col-md-6">
             <h4>Endereço de Entrega</h4>
             <form id="delivery-address-form" class="needs-validation" novalidate>
-                <div class="form-group">
-                    <label for="postalCode">CEP</label>
-                    <input type="text" class="form-control" id="postalCode" name="postalCode" required>
-                    <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="street">Rua</label>
+                        <input type="text" class="form-control" id="street" name="street" required>
+                        <div class="invalid-feedback">Por favor, insira o nome da rua.</div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="street">Rua</label>
-                    <input type="text" class="form-control" id="street" name="street" required>
-                    <div class="invalid-feedback">Por favor, insira o nome da rua.</div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="number">Número</label>
+                        <input type="text" class="form-control" id="number" name="number" required>
+                        <div class="invalid-feedback">Por favor, insira o número da residência.</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="postalCode">CEP</label>
+                        <input type="text" class="form-control" id="postalCode" name="postalCode" required>
+                        <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="neighborhood">Bairro</label>
-                    <input type="text" class="form-control" id="neighborhood" name="neighborhood" required>
-                    <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="neighborhood">Bairro</label>
+                        <input type="text" class="form-control" id="neighborhood" name="neighborhood" required>
+                        <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="city">Cidade</label>
+                        <input type="text" class="form-control" id="city" name="city" required>
+                        <div class="invalid-feedback">Por favor, insira o nome da cidade.</div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="number">Número</label>
-                    <input type="text" class="form-control" id="number" name="number" required>
-                    <div class="invalid-feedback">Por favor, insira o número da residência.</div>
-                </div>
-                <div class="form-group">
-                    <label for="city">Cidade</label>
-                    <input type="text" class="form-control" id="city" name="city" required>
-                    <div class="invalid-feedback">Por favor, insira o nome da cidade.</div>
-                </div>
-                <div class="form-group">
-                    <label for="state">Estado</label>
-                    <select class="form-control" id="state" name="state" required>
-                        <option value="">Selecione um estado</option>
-                        <option value="SP">São Paulo</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="MG">Minas Gerais</option>
-                        <!-- Outros estados -->
-                    </select>
-                    <div class="invalid-feedback">Por favor, selecione o estado.</div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="state">Estado</label>
+                        <select class="form-control" id="state" name="state" required>
+                            <option value="">Selecione um estado</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+
+                        </select>
+                        <div class="invalid-feedback">Por favor, selecione o estado.</div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Formulário de Endereço de Cobrança -->
-    <h4 class="mt-4">Endereço de Cobrança</h4>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="sameAddressCheckbox">
-        <label for="sameAddressCheckbox">Usar o mesmo endereço para entrega e cobrança</label>
-    </div>
-
-    <form id="billing-address-form" class="needs-validation mt-3" novalidate>
-        <fieldset id="billing-address-fields" disabled>
-            <div class="form-group">
-                <label for="billingPostalCode">CEP</label>
-                <input type="text" class="form-control" id="billingPostalCode" name="billingPostalCode" required>
-                <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
-            </div>
-            <div class="form-group">
-                <label for="billingStreet">Rua</label>
-                <input type="text" class="form-control" id="billingStreet" name="billingStreet" required>
-                <div class="invalid-feedback">Por favor, insira o nome da rua.</div>
-            </div>
-            <div class="form-group">
-                <label for="billingNeighborhood">Bairro</label>
-                <input type="text" class="form-control" id="billingNeighborhood" name="billingNeighborhood" required>
-                <div class="invalid-feedback">Por favor, insira o bairro.</div>
-            </div>
-            <div class="form-group">
-                <label for="billingNumber">Número</label>
-                <input type="text" class="form-control" id="billingNumber" name="billingNumber" required>
-                <div class="invalid-feedback">Por favor, insira o número da residência.</div>
-            </div>
-            <div class="form-group">
-                <label for="billingCity">Cidade</label>
-                <input type="text" class="form-control" id="billingCity" name="billingCity" required>
-                <div class="invalid-feedback">Por favor, insira o nome da cidade.</div>
-            </div>
-            <div class="form-group">
-                <label for="billingState">Estado</label>
-                <select class="form-control" id="billingState" name="billingState" required>
-                    <option value="">Selecione um estado</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="MG">Minas Gerais</option>
-                    <!-- Outros estados -->
-                </select>
-                <div class="invalid-feedback">Por favor, selecione o estado.</div>
-            </div>
-        </fieldset>
-    </form>
-
     <button type="submit" class="btn btn-success mt-4" onclick="validateForms()">Confirmar Pedido</button>
 </div>
-
-<div id="wallet_container"></div>
 
 <script>
     // Validações dos formulários
@@ -156,60 +130,116 @@
         }, false);
     })();
 
-    // Função para validar os dois formulários antes de prosseguir
+    function validaCPF(cpf) {
+      var Soma = 0
+      var Resto
+
+      var strCPF = String(cpf).replace(/[^\d]/g, '')
+
+      if (strCPF.length !== 11)
+         return false
+
+      if ([
+        '00000000000',
+        '11111111111',
+        '22222222222',
+        '33333333333',
+        '44444444444',
+        '55555555555',
+        '66666666666',
+        '77777777777',
+        '88888888888',
+        '99999999999',
+        ].indexOf(strCPF) !== -1)
+        return false
+
+      for (i=1; i<=9; i++)
+        Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i);
+
+      Resto = (Soma * 10) % 11
+
+      if ((Resto == 10) || (Resto == 11))
+        Resto = 0
+
+      if (Resto != parseInt(strCPF.substring(9, 10)) )
+        return false
+
+      Soma = 0
+
+      for (i = 1; i <= 10; i++)
+        Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (12 - i)
+
+      Resto = (Soma * 10) % 11
+
+      if ((Resto == 10) || (Resto == 11))
+        Resto = 0
+
+      if (Resto != parseInt(strCPF.substring(10, 11) ) )
+        return false
+
+      return true
+    }
+
+
     function validateForms() {
         const invoiceForm = document.getElementById('invoice-form');
         const addressForm = document.getElementById('delivery-address-form');
-        const billingAddressForm = document.getElementById('billing-address-form');
 
         if (invoiceForm.checkValidity() && addressForm.checkValidity()) {
-            if (document.getElementById('sameAddressCheckbox').checked) {
-                // Se o checkbox estiver marcado, validar o formulário de cobrança
-                billingAddressForm.classList.add('was-validated');
-                if (billingAddressForm.checkValidity()) {
-                    alert('Pedido confirmado com sucesso!');
-                    // Aqui você pode adicionar a lógica para enviar os dados do pedido
+            const customerOrder = {
+                fullName: document.getElementById('fullName').value,
+                cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+                email: document.getElementById('email').value,
+                deliveryStreet: document.getElementById('street').value,
+                deliveryNumber: document.getElementById('number').value,
+                deliveryPostalCode: document.getElementById('postalCode').value.replace(/\D/g, ''),
+                deliveryNeighborhood: document.getElementById('neighborhood').value,
+                deliveryCity: document.getElementById('city').value,
+                deliveryState: document.getElementById('state').value,
+                billingStreet: document.getElementById('street').value,
+                billingNumber: document.getElementById('number').value,
+                billingPostalCode: document.getElementById('postalCode').value.replace(/\D/g, ''),
+                billingNeighborhood: document.getElementById('neighborhood').value,
+                billingCity: document.getElementById('city').value,
+                billingState: document.getElementById('state').value,
+            };
+
+            $.ajax({
+                url: '/pedido/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(customerOrder),
+                success: function(response) {
+                    parent.location = "/checkout/payment";
+                },
+                error: function(xhr, status, error) {
+                    alert('Erro ao criar o pedido: ' + xhr.responseText);
                 }
-            } else {
-                alert('Pedido confirmado com sucesso!');
-                // Aqui você pode adicionar a lógica para enviar os dados do pedido
-            }
+            });
         } else {
-            // Se os formulários não forem válidos, ativa a validação visual
             invoiceForm.classList.add('was-validated');
             addressForm.classList.add('was-validated');
         }
     }
 
-    // Habilitar ou desabilitar o formulário de cobrança
-    document.getElementById('sameAddressCheckbox').addEventListener('change', function () {
-        const isChecked = this.checked;
-        document.getElementById('billing-address-fields').disabled = isChecked;
-        if (isChecked) {
-            // Copiar valores do endereço de entrega para cobrança
-            document.getElementById('billingPostalCode').value = document.getElementById('postalCode').value;
-            document.getElementById('billingStreet').value = document.getElementById('street').value;
-            document.getElementById('billingNeighborhood').value = document.getElementById('neighborhood').value;
-            document.getElementById('billingNumber').value = document.getElementById('number').value;
-            document.getElementById('billingCity').value = document.getElementById('city').value;
-            document.getElementById('billingState').value = document.getElementById('state').value;
-        } else {
-            // Limpar campos de cobrança se desmarcado
-            document.getElementById('billingPostalCode').value = '';
-            document.getElementById('billingStreet').value = '';
-            document.getElementById('billingNeighborhood').value = '';
-            document.getElementById('billingNumber').value = '';
-            document.getElementById('billingCity').value = '';
-            document.getElementById('billingState').value = '';
-        }
-    });
 
     // Aplicar máscara de CPF e CEP
     const cpfInput = document.getElementById('cpf');
     cpfInput.addEventListener('input', function (e) {
         const value = this.value.replace(/\D/g, '').substring(0, 11);
-        const formattedValue = value.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})$/, '$1');
+        const formattedValue = value
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
         this.value = formattedValue;
+    });
+
+    document.getElementById('cpf').addEventListener('input', function() {
+        if (!validaCPF(this.value)) {
+            this.setCustomValidity('CPF inválido.');
+        } else {
+            this.setCustomValidity('');
+        }
     });
 
     const postalCodeInput = document.getElementById('postalCode');
@@ -219,25 +249,4 @@
         this.value = formattedValue;
     });
 
-    const billingPostalCodeInput = document.getElementById('billingPostalCode');
-    billingPostalCodeInput.addEventListener('input', function (e) {
-        const value = this.value.replace(/\D/g, '').substring(0, 8);
-        const formattedValue = value.replace(/(\d{5})(\d)/, '$1-$2');
-        this.value = formattedValue;
-    });
-
-    const mp = new MercadoPago('[[${mpPublicKey}]]');
-    const bricksBuilder = mp.bricks();
-
-    const preferenceId = '[[${preferenceId}]]';
-    mp.bricks().create("wallet", "wallet_container", {
-        initialization: {
-            preferenceId: preferenceId,
-        },
-        customization: {
-            texts: {
-                valueProp: 'smart_option',
-            },
-        },
-    });
 </script>

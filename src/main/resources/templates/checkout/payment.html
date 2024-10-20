@@ -1,0 +1,21 @@
+<div class="container text-center mt-5">
+    <h3>Estamos quase lá</h3>
+    <p>Seu pedido já foi registrado em nosso sistema, agora só falta efetuar o pagamento de forma segura através do Mercado Pago</p>
+    <div id="wallet_container"></div>
+</div>
+
+<script>
+const mp = new MercadoPago('[[${mpPublicKey}]]');
+const bricksBuilder = mp.bricks();
+const preferenceId = '[[${preferenceId}]]';
+mp.bricks().create("wallet", "wallet_container", {
+    initialization: {
+        preferenceId: preferenceId,
+    },
+    customization: {
+        texts: {
+            valueProp: 'smart_option',
+        },
+    },
+});
+</script>
