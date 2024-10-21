@@ -44,7 +44,7 @@ public class CheckoutController {
     @Value("${spring.profiles.active:default}")
     private String activeProfile;
 
-    public CheckoutController(CustomerOrderManager customerOrderManager, CartManager cartManager){
+    public CheckoutController(CustomerOrderManager customerOrderManager, CartManager cartManager) {
         this.customerOrderManager = customerOrderManager;
         this.cartManager = cartManager;
     }
@@ -57,7 +57,7 @@ public class CheckoutController {
             model.addAttribute("data", data);
             model.addAttribute("template", "checkout/payment");
 
-            if(activeProfile=="default"){
+            if (activeProfile == "default") {
                 return "";
             }
 
@@ -80,9 +80,9 @@ public class CheckoutController {
 
                 PreferenceBackUrlsRequest backUrls =
                         PreferenceBackUrlsRequest.builder()
-                                .success(siteBaseurl + "/pedido/success")
-                                .pending(siteBaseurl + "/pedido/pending")
-                                .failure(siteBaseurl + "/pedido/failure")
+                                .success(siteBaseurl + "/checkout/success")
+                                .pending(siteBaseurl + "/checkout/pending")
+                                .failure(siteBaseurl + "/checkout/failure")
                                 .build();
 
                 PreferenceShipmentsRequest shipments = PreferenceShipmentsRequest.builder().
@@ -134,31 +134,96 @@ public class CheckoutController {
     }
 
 
-
     @GetMapping("/success")
-    @ResponseBody
-    public String handleWebhookSuccess(Model model, @RequestBody(required = false) String payload) {
-        System.out.println("Recebido: " + payload);
+    public String handleWebhookSuccess(Model model,
+                                       @RequestParam(required = false) String collection_id,
+                                       @RequestParam(required = false) String collection_status,
+                                       @RequestParam(required = false) String payment_id,
+                                       @RequestParam(required = false) String status,
+                                       @RequestParam(required = false) String external_reference,
+                                       @RequestParam(required = false) String payment_type,
+                                       @RequestParam(required = false) String merchant_order_id,
+                                       @RequestParam(required = false) String preference_id,
+                                       @RequestParam(required = false) String site_id,
+                                       @RequestParam(required = false) String processing_mode,
+                                       @RequestParam(required = false) String merchant_account_id) {
+
+        System.out.println("Collection ID: " + collection_id);
+        System.out.println("Collection Status: " + collection_status);
+        System.out.println("Payment ID: " + payment_id);
+        System.out.println("Status: " + status);
+        System.out.println("External Reference: " + external_reference);
+        System.out.println("Payment Type: " + payment_type);
+        System.out.println("Merchant Order ID: " + merchant_order_id);
+        System.out.println("Preference ID: " + preference_id);
+        System.out.println("Site ID: " + site_id);
+        System.out.println("Processing Mode: " + processing_mode);
+        System.out.println("Merchant Account ID: " + merchant_account_id);
+
         model.addAttribute("template", "checkout/back-urls/success");
         return "layout";
     }
 
     @GetMapping("/pending")
-    @ResponseBody
-    public String handleWebhookPending(Model model, @RequestBody(required = false) String payload) {
-        System.out.println("Recebido: " + payload);
+    public String handleWebhookPending(Model model,
+                                       @RequestParam(required = false) String collection_id,
+                                       @RequestParam(required = false) String collection_status,
+                                       @RequestParam(required = false) String payment_id,
+                                       @RequestParam(required = false) String status,
+                                       @RequestParam(required = false) String external_reference,
+                                       @RequestParam(required = false) String payment_type,
+                                       @RequestParam(required = false) String merchant_order_id,
+                                       @RequestParam(required = false) String preference_id,
+                                       @RequestParam(required = false) String site_id,
+                                       @RequestParam(required = false) String processing_mode,
+                                       @RequestParam(required = false) String merchant_account_id) {
+
+        System.out.println("Collection ID: " + collection_id);
+        System.out.println("Collection Status: " + collection_status);
+        System.out.println("Payment ID: " + payment_id);
+        System.out.println("Status: " + status);
+        System.out.println("External Reference: " + external_reference);
+        System.out.println("Payment Type: " + payment_type);
+        System.out.println("Merchant Order ID: " + merchant_order_id);
+        System.out.println("Preference ID: " + preference_id);
+        System.out.println("Site ID: " + site_id);
+        System.out.println("Processing Mode: " + processing_mode);
+        System.out.println("Merchant Account ID: " + merchant_account_id);
+
         model.addAttribute("template", "checkout/back-urls/pending");
         return "layout";
     }
 
     @GetMapping("/failure")
-    @ResponseBody
-    public String handleWebhookFailure(Model model, @RequestBody(required = false) String payload) {
-        System.out.println("Recebido: " + payload);
+    public String handleWebhookFailure(Model model,
+                                       @RequestParam(required = false) String collection_id,
+                                       @RequestParam(required = false) String collection_status,
+                                       @RequestParam(required = false) String payment_id,
+                                       @RequestParam(required = false) String status,
+                                       @RequestParam(required = false) String external_reference,
+                                       @RequestParam(required = false) String payment_type,
+                                       @RequestParam(required = false) String merchant_order_id,
+                                       @RequestParam(required = false) String preference_id,
+                                       @RequestParam(required = false) String site_id,
+                                       @RequestParam(required = false) String processing_mode,
+                                       @RequestParam(required = false) String merchant_account_id) {
+
+        System.out.println("Collection ID: " + collection_id);
+        System.out.println("Collection Status: " + collection_status);
+        System.out.println("Payment ID: " + payment_id);
+        System.out.println("Status: " + status);
+        System.out.println("External Reference: " + external_reference);
+        System.out.println("Payment Type: " + payment_type);
+        System.out.println("Merchant Order ID: " + merchant_order_id);
+        System.out.println("Preference ID: " + preference_id);
+        System.out.println("Site ID: " + site_id);
+        System.out.println("Processing Mode: " + processing_mode);
+        System.out.println("Merchant Account ID: " + merchant_account_id);
+
         model.addAttribute("template", "checkout/back-urls/failure");
         return "layout";
     }
-
+    
 
 
 }
