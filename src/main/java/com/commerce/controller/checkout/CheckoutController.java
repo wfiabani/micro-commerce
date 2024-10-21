@@ -5,6 +5,8 @@ import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.CartManager;
 import com.commerce.manager.CustomerOrderManager;
 import com.commerce.model.CustomerOrder;
+import com.commerce.model.CustomerOrderItem;
+import com.commerce.model.Product;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.resources.preference.Preference;
@@ -14,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,8 @@ public class CheckoutController {
         this.cartManager = cartManager;
     }
 
+
+    // refatorar, tirar essa responsabilidade do controller, colocar nas boas práticas
     @GetMapping("/payment/order/{id}")
     public String doPayment(Model model, @PathVariable String id) {
         try {
@@ -64,20 +67,22 @@ public class CheckoutController {
             try {
                 model.addAttribute("mpPublicKey", mpPublicKey);
                 MercadoPagoConfig.setAccessToken(mpAccessToken);
-                PreferenceItemRequest itemRequest =
-                        PreferenceItemRequest.builder()
-                                .id("1234")
-                                .title("Games")
-                                .description("PS5")
-                                .pictureUrl("http://picture.com/PS5")
-                                .categoryId("games")
-                                .quantity(2)
-                                .currencyId("BRL")
-                                .unitPrice(new BigDecimal("4"))
-                                .build();
                 List<PreferenceItemRequest> items = new ArrayList<>();
-                items.add(itemRequest);
+                for(CustomerOrderItem item : customerOrder.getItems()){
+                    Product product = item.getProduct();
+                    PreferenceItemRequest itemRequest =
+                            PreferenceItemRequest.builder()
+                                    .id(product.getId().toString())
+                                    .title(product.getName())
+                                    .description(product.getShortDescription())
+                                    .categoryId(product.getCategory().getName())
+                                    .quantity(item.getQuantity())
+                                    .currencyId("BRL")
+                                    .unitPrice(item.getUnitPrice())
+                                    .build();
+                    items.add(itemRequest);
 
+                }
                 PreferenceBackUrlsRequest backUrls =
                         PreferenceBackUrlsRequest.builder()
                                 .success(siteBaseurl + "/checkout/success")
@@ -223,7 +228,7 @@ public class CheckoutController {
         model.addAttribute("template", "checkout/back-urls/failure");
         return "layout";
     }
-    
+
 
 
 }

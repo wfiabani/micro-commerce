@@ -1,12 +1,4 @@
--- public.category definition
 
--- Drop table
-
--- DROP TABLE public.category;
-
--- public.category_seq definition
-
--- DROP SEQUENCE public.category_seq;
 
 CREATE SEQUENCE public.category_seq
 	INCREMENT BY 1
@@ -16,10 +8,6 @@ CREATE SEQUENCE public.category_seq
 	CACHE 1
 	NO CYCLE;
 
-
--- public.image_seq definition
-
--- DROP SEQUENCE public.image_seq;
 
 CREATE SEQUENCE public.image_seq
 	INCREMENT BY 1
@@ -37,10 +25,14 @@ CREATE SEQUENCE public.customer_order_seq
 	CACHE 1
 	NO CYCLE;
 
+CREATE SEQUENCE public.customer_order_item_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
 
--- public.product_seq definition
-
--- DROP SEQUENCE public.product_seq;
 
 CREATE SEQUENCE public.product_seq
 	INCREMENT BY 1
@@ -56,12 +48,6 @@ CREATE TABLE public.category (
 	CONSTRAINT category_pkey PRIMARY KEY (id)
 );
 
-
--- public.product definition
-
--- Drop table
-
--- DROP TABLE public.product;
 
 CREATE TABLE public.product (
 	id int8 NOT NULL DEFAULT nextval('product_seq'::regclass),
@@ -83,12 +69,6 @@ CREATE TABLE public.product (
 	CONSTRAINT fk_product_category FOREIGN KEY (category_id) REFERENCES public.category(id)
 );
 
-
--- public.image definition
-
--- Drop table
-
--- DROP TABLE public.image;
 
 CREATE TABLE public.image (
 	id int8 NOT NULL DEFAULT nextval('image_seq'::regclass),
@@ -119,4 +99,15 @@ CREATE TABLE public.customer_order (
 	email varchar(100) NOT NULL,
 	full_name varchar(100) NOT NULL,
 	CONSTRAINT customer_order_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.customer_order_item (
+	id int8 NOT NULL DEFAULT nextval('customer_order_item_seq'::regclass),
+	quantity int4 NOT NULL,
+	unit_price numeric(38, 2) NOT NULL,
+	customer_order_id int8 NOT NULL,
+	product_id int8 NOT NULL,
+	CONSTRAINT customer_order_item_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_customerorderitem_customerorder FOREIGN KEY (customer_order_id) REFERENCES public.customer_order(id),
+	CONSTRAINT fk_customerorderitem_product FOREIGN KEY (product_id) REFERENCES public.product(id)
 );

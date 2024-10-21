@@ -1,6 +1,7 @@
 package com.commerce.controller.order.schema;
 
 import com.commerce.model.CustomerOrder;
+import com.commerce.model.CustomerOrderItem;
 import com.commerce.validator.ValidCPF;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Mapper
 public interface CustomerOrderMapper {
@@ -18,6 +20,8 @@ public interface CustomerOrderMapper {
     GetCustomerOrder toGetCustomerOrder(CustomerOrder customerOrder);
 
     CustomerOrder toCustomerOrder(PostCustomerOrder createCustomerOrder);
+
+    List<GetCustomerOrderItem> toGetCustomerOrderItems(List<CustomerOrderItem> items);
 
     record GetCustomerOrder(
             Long id,
@@ -41,7 +45,8 @@ public interface CustomerOrderMapper {
             String billingPostalCode,
             String billingNeighborhood,
             String billingCity,
-            String billingState
+            String billingState,
+            List<GetCustomerOrderItem> items
     ) {
     }
 
@@ -97,4 +102,10 @@ public interface CustomerOrderMapper {
 
     ) {}
 
+    record GetCustomerOrderItem(
+            Long id,
+            Long productId,
+            BigDecimal unitPrice,
+            Integer quantity
+    ) {}
 }

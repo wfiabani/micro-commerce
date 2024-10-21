@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "customer_order")
@@ -105,6 +106,9 @@ public class CustomerOrder {
     @Column(name = "billing_state", nullable = false, length = 2)
     @NotBlank(message = "Billing state is required")
     private String billingState;
+
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CustomerOrderItem> items;
 
 
     public Long getId() {
@@ -277,5 +281,13 @@ public class CustomerOrder {
 
     public void setBillingState(String billingState) {
         this.billingState = billingState;
+    }
+
+    public List<CustomerOrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CustomerOrderItem> items) {
+        this.items = items;
     }
 }
