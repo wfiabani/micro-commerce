@@ -17,11 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 
 @Controller
 @RequestMapping("pedido")
@@ -60,7 +55,6 @@ public class CustomerOrderController {
         try {
             var customerOrder = orderManager.addCustomerOrder(request);
             var data = CustomerOrderMapper.INSTANCE.toGetCustomerOrder(customerOrder);
-            System.out.println(data);
             return ResponseEntity.ok(data);
         } catch (InvalidOrderException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -84,77 +78,6 @@ public class CustomerOrderController {
     }
 
 
-    @PostMapping("/webhooks")
-    @ResponseBody
-    public void handleWebhook(
-            @RequestBody String payload,
-            @RequestHeader("x-signature") String xSignature,
-            @RequestHeader("x-request-id") String xRequestId,
-            @RequestParam Map<String, String> queryParams
-    ) {
-
-
-        // Extrair data.id dos parâmetros da consulta
-        String dataID = queryParams.getOrDefault("data.id", "");
-
-        // Separar a x-signature em partes
-        String[] parts = xSignature.split(",");
-
-        // Inicializar variáveis para ts e hash
-        String ts = null;
-        String hash = null;
-
-        // Iterar sobre os valores para obter ts e v1
-        for (String part : parts) {
-            String[] keyValue = part.split("=", 2);
-            if (keyValue.length == 2) {
-                String key = keyValue[0].trim();
-                String value = keyValue[1].trim();
-                if ("ts".equals(key)) {
-                    ts = value;
-                } else if ("v1".equals(key)) {
-                    hash = value;
-                }
-            }
-        }
-
-        // Gerar a string manifest
-        String manifest = "id:" + dataID + ";request-id:" + xRequestId + ";ts:" + ts + ";";
-
-        // Criar a assinatura HMAC
-        try {
-            String calculatedHash = calculateHMAC(manifest, mpClientSecret);
-            if (calculatedHash.equals(hash)) {
-                // HMAC verification passed
-                System.out.println("Verificada assinatura");
-                System.out.println("Retorno webhook: " + payload);
-            } else {
-                System.out.println("Retorno webhook: " + payload);
-                System.out.println("Falohu na verificação");
-            }
-        } catch (Exception e) {
-            System.out.println("Exception");
-        }
-
-
-    }
-
-
-    private String calculateHMAC(String data, String key) throws Exception {
-        Mac hmacSha256 = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-        hmacSha256.init(secretKeySpec);
-        byte[] hash = hmacSha256.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        return bytesToHex(hash); // Converter o resultado em hexadecimal
-    }
-
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
 
 
     @GetMapping("/success")

@@ -1,0 +1,12 @@
+<script>
+Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Não foi possível finalizar sua compra por problemas no pagamento. Se precisar de ajuda, entre em contato.',
+  confirmButtonText: 'Ir para a home'
+}).then((result) => {
+  if (result.isConfirmed) {
+    parent.location = "/"
+  }
+});
+</script>

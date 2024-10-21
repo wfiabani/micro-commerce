@@ -203,17 +203,21 @@
                 billingCity: document.getElementById('city').value,
                 billingState: document.getElementById('state').value,
             };
-
             $.ajax({
                 url: '/pedido/add',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(customerOrder),
                 success: function(response) {
-                    parent.location = "/checkout/payment";
+                    parent.location = "/checkout/payment/order/"+response.orderIdentifier;
                 },
                 error: function(xhr, status, error) {
-                    alert('Erro ao criar o pedido: ' + xhr.responseText);
+                    Swal.fire({
+                        title: 'Erro',
+                        text: 'Não foi possível criar o pedido, verifique os dados informados.',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
                 }
             });
         } else {
