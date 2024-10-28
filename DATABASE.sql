@@ -81,6 +81,9 @@ CREATE TABLE public.image (
 );
 
 
+CREATE TYPE order_status AS ENUM ('CREATED', 'PAID', 'SHIPPED', 'COMPLETED', 'CANCELLED');
+
+
 CREATE TABLE public.customer_order (
 	id int8 NOT NULL DEFAULT nextval('customer_order_seq'::regclass),
 	billing_city varchar(255) NOT NULL,

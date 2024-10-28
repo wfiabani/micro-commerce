@@ -107,6 +107,10 @@ public class CustomerOrder {
     @NotBlank(message = "Billing state is required")
     private String billingState;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
+
     @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CustomerOrderItem> items;
 
@@ -281,6 +285,14 @@ public class CustomerOrder {
 
     public void setBillingState(String billingState) {
         this.billingState = billingState;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     public List<CustomerOrderItem> getItems() {

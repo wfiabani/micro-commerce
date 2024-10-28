@@ -46,6 +46,7 @@ public interface CustomerOrderMapper {
             String billingNeighborhood,
             String billingCity,
             String billingState,
+            String status,
             List<GetCustomerOrderItem> items
     ) {
     }

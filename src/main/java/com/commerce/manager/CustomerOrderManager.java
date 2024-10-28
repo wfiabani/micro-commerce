@@ -7,6 +7,7 @@ import com.commerce.exception.OrderProcessingException;
 import com.commerce.exception.ProductNotFoundException;
 import com.commerce.model.CustomerOrder;
 import com.commerce.model.CustomerOrderItem;
+import com.commerce.model.OrderStatus;
 import com.commerce.model.Product;
 import com.commerce.model.session.Cart;
 import com.commerce.repository.CustomerOrderRepository;
@@ -65,6 +66,7 @@ public class CustomerOrderManager {
         customerOrder.setTotalProductValue(cart.getTotalProductValue());
         customerOrder.setTotalValue(cart.getTotalValue());
         customerOrder.setDeliveryTime(cart.getDeliveryTime());
+        customerOrder.setStatus(OrderStatus.CREATED);
         String orderIdentifier = generateOrderIdentifier();
         customerOrder.setOrderIdentifier(orderIdentifier);
         return customerOrder;
