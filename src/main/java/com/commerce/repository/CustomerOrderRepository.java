@@ -10,4 +10,6 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, Lo
 
     Optional<CustomerOrder> findByOrderIdentifier(String orderIdentifier);
 
+    Optional<CustomerOrder> findByMerchantOrderId(String merchantOrderId);
+
 }

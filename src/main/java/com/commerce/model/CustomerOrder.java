@@ -107,6 +107,9 @@ public class CustomerOrder {
     @NotBlank(message = "Billing state is required")
     private String billingState;
 
+    @Column(name = "merchant_order_id", nullable = true, length = 20)
+    private String merchantOrderId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
@@ -302,4 +305,13 @@ public class CustomerOrder {
     public void setItems(List<CustomerOrderItem> items) {
         this.items = items;
     }
+
+    public String getMerchantOrderId() {
+        return merchantOrderId;
+    }
+
+    public void setMerchantOrderId(String merchantOrderId) {
+        this.merchantOrderId = merchantOrderId;
+    }
+
 }

@@ -10,6 +10,8 @@ import com.commerce.model.Product;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.resources.preference.Preference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +28,11 @@ import java.util.Map;
 public class CheckoutController {
 
     private final CustomerOrderManager customerOrderManager;
+
     private final CartManager cartManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(CheckoutController.class);
+
     @Value("${custom.MP_PUBLIC_KEY}")
     private String mpPublicKey;
 
@@ -139,6 +145,11 @@ public class CheckoutController {
     }
 
 
+
+    private CustomerOrder updateMerchantOrderId(String external_reference, String merchant_order_id) throws Exception{
+        return customerOrderManager.updateMerchantOrderId(external_reference, merchant_order_id);
+    }
+
     @GetMapping("/success")
     public String handleWebhookSuccess(Model model,
                                        @RequestParam(required = false) String collection_id,
@@ -165,8 +176,17 @@ public class CheckoutController {
         System.out.println("Processing Mode: " + processing_mode);
         System.out.println("Merchant Account ID: " + merchant_account_id);
 
-        model.addAttribute("template", "checkout/back-urls/success");
-        return "layout";
+        try {
+            CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
+            logger.trace(data.getMerchantOrderId());
+            model.addAttribute("data", data);
+            model.addAttribute("template", "checkout/back-urls/success");
+            return "layout";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error/error";
+        }
+
     }
 
     @GetMapping("/pending")
@@ -195,8 +215,17 @@ public class CheckoutController {
         System.out.println("Processing Mode: " + processing_mode);
         System.out.println("Merchant Account ID: " + merchant_account_id);
 
-        model.addAttribute("template", "checkout/back-urls/pending");
-        return "layout";
+        try {
+            CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
+            logger.trace(data.getMerchantOrderId());
+            model.addAttribute("data", data);
+            model.addAttribute("template", "checkout/back-urls/success");
+            return "layout";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error/error";
+        }
+
     }
 
     @GetMapping("/failure")
@@ -225,8 +254,17 @@ public class CheckoutController {
         System.out.println("Processing Mode: " + processing_mode);
         System.out.println("Merchant Account ID: " + merchant_account_id);
 
-        model.addAttribute("template", "checkout/back-urls/failure");
-        return "layout";
+        try {
+            CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
+            logger.trace(data.getMerchantOrderId());
+            model.addAttribute("data", data);
+            model.addAttribute("template", "checkout/back-urls/success");
+            return "layout";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error/error";
+        }
+
     }
 
 

@@ -59,6 +59,23 @@ public class CustomerOrderManager {
         }
     }
 
+    public CustomerOrder updateMerchantOrderId(String external_reference, String merchant_order_id) {
+        try {
+            CustomerOrder customerOrder = getOrder(external_reference);
+            customerOrder.setMerchantOrderId(merchant_order_id);
+            return customerOrderRepository.save(customerOrder);
+        } catch (IllegalArgumentException e) {
+            throw new OrderProcessingException("Invalid input data: " + e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            throw new OrderProcessingException("Data integrity violation: " + e.getMessage());
+        } catch (TransactionSystemException e) {
+            throw new OrderProcessingException("Transaction failed: " + e.getMessage());
+        } catch (Exception e) {
+            throw new OrderProcessingException("Failed to add customer order: " + e.getMessage());
+        }
+    }
+
+
     private CustomerOrder createCustomerOrder(CustomerOrderMapper.PostCustomerOrder postCustomerOrder) {
         CustomerOrder customerOrder = CustomerOrderMapper.INSTANCE.toCustomerOrder(postCustomerOrder);
         customerOrder.setShippingMethod(cart.getShippingMethodName());
@@ -94,6 +111,12 @@ public class CustomerOrderManager {
     public CustomerOrder getOrder(String id) {
         CustomerOrder customerOrder = customerOrderRepository.findByOrderIdentifier(id)
                 .orElseThrow(() -> new CustomerOrderNotFoundException("Customer order with identifier " + id + " not found."));
+        return customerOrder;
+    }
+
+    public CustomerOrder getOrderByMerchantOrderId(String merchantOrderId) {
+        CustomerOrder customerOrder = customerOrderRepository.findByMerchantOrderId(merchantOrderId)
+                .orElseThrow(() -> new CustomerOrderNotFoundException("Customer order with merchant order id " + merchantOrderId + " not found."));
         return customerOrder;
     }
 
