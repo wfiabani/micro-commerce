@@ -33,7 +33,7 @@ public class CheckoutManager {
 
     }
 
-    public void createPreference(CustomerOrder customerOrder) {
+    public Preference createPreference(CustomerOrder customerOrder) {
         try {
             MercadoPagoConfig.setAccessToken(mpAccessToken);
             List<PreferenceItemRequest> items = createPreferenceItens(customerOrder);
@@ -62,7 +62,7 @@ public class CheckoutManager {
                     .build();
 
             PreferenceClient client = new PreferenceClient();
-            Preference preference = client.create(preferenceRequest);
+            return client.create(preferenceRequest);
         } catch (Exception e) {
             throw new CheckoutException("Erro ao criar preferência");
         }

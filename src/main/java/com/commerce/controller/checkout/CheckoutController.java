@@ -6,6 +6,7 @@ import com.commerce.manager.CartManager;
 import com.commerce.manager.CheckoutManager;
 import com.commerce.manager.CustomerOrderManager;
 import com.commerce.model.CustomerOrder;
+import com.mercadopago.resources.preference.Preference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,8 +41,9 @@ public class CheckoutController {
     public String doPayment(Model model, @PathVariable String id) {
         try {
             CustomerOrder customerOrder = customerOrderManager.getOrder(id);
-            checkoutManager.createPreference(customerOrder);
+            Preference preference = checkoutManager.createPreference(customerOrder);
             CustomerOrderMapper.GetCustomerOrder data = CustomerOrderMapper.INSTANCE.toGetCustomerOrder(customerOrder);
+            model.addAttribute("preferenceId", preference.getId());
             model.addAttribute("mpPublicKey", mpPublicKey);
             model.addAttribute("data", data);
             model.addAttribute("template", "checkout/payment");
