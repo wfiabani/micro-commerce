@@ -1,6 +1,6 @@
-package com.commerce.model
+package com.commerce.model;
 
-enum class OrderStatus {
+public enum OrderStatus {
     CREATED,
 
     // Pedido criado
