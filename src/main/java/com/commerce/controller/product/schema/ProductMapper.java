@@ -5,6 +5,7 @@ import com.commerce.model.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +20,10 @@ public interface ProductMapper {
     ProductMapper.GetProduct toGetProduct(Product product);
 
     GetImage toImageDTO(Image image);
+
+    default Page<GetProduct> toGetProductPage(Page<Product> products) {
+        return products.map(this::toGetProduct);
+    }
 
     record GetProduct(
             Long id,
@@ -46,6 +51,5 @@ public interface ProductMapper {
             Integer order
     ) {
     }
-
 
 }

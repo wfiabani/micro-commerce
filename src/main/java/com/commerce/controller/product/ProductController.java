@@ -4,15 +4,14 @@ import com.commerce.controller.product.schema.ProductMapper;
 import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.ProductManager;
 import com.commerce.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("product")
@@ -51,6 +50,20 @@ public class ProductController {
         } catch (ProductNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/category/{categoryId}/{categorySlug:.*}")
+    public String getProductsByCategory(Model model,
+                                        @PathVariable Long categoryId,
+                                        @PathVariable String categorySlug,
+                                        @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 3;
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        Page<Product> productsPage = productManager.getProductsByCategory(categoryId, pageRequest);
+        Page<ProductMapper.GetProduct> dataPage = ProductMapper.INSTANCE.toGetProductPage(productsPage);
+        model.addAttribute("data", dataPage);
+        model.addAttribute("template", "product/products-list");
+        return "layout";
     }
 
 }
