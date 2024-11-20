@@ -12,7 +12,7 @@
                 <div class="carousel-inner">
                     <div th:each="image, stat : ${data.images}" th:class="${stat.index == 0} ? 'carousel-item active' : 'carousel-item'">
                         <!-- Atualiza o caminho da imagem para apontar para a pasta 'product-images' dentro de 'static' -->
-                        <img th:src="@{/product-images/} + ${image.fileName}" th:alt="${image.name}" class="d-block w-100">
+                        <img th:src="${image.fileName}" th:alt="${image.name}" class="d-block w-100">
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
