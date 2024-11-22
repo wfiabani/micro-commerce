@@ -8,6 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long> {
 
-    Page<Product> findAllByCategoryId(Long categoryId, Pageable pageable);
+    Page<Product> findAllByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
 
 }

@@ -30,6 +30,6 @@ public class ProductManager {
 
     @Cacheable("products")
     public Page<Product> getProductsByCategory(Long categoryId, PageRequest pageRequest) {
-        return productRepository.findAllByCategoryId(categoryId, pageRequest);
+        return productRepository.findAllByCategoryIdAndIsActiveTrue(categoryId, pageRequest);
     }
 }
