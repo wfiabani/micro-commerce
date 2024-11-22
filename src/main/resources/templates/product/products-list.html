@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Test</title>
-</head>
-<body>
-<p>Template Test</p>
-</body>
-</html>
+<div th:if="!${data.size()}" class="container text-center mt-5">
+    <h3>Nada para exibir =(</h3>
+    <p>Não existem produtos nesta categoria.</p>
+    <a href="/" class="btn btn-primary">Ir para a Página Inicial</a>
+</div>
+
+<div th:if="${data.size()}" class="container">
+    <div th:replace="product/pagination"></div>
+</div>
+

@@ -61,8 +61,15 @@ public class ProductController {
         PageRequest pageRequest = PageRequest.of(page, pageSize);
         Page<Product> productsPage = productManager.getProductsByCategory(categoryId, pageRequest);
         Page<ProductMapper.GetProduct> dataPage = ProductMapper.INSTANCE.toGetProductPage(productsPage);
-        model.addAttribute("data", dataPage);
-        model.addAttribute("template", "product/products-list");
+        // Adiciona informações ao modelo para exibição no HTML
+        model.addAttribute("data", dataPage.getContent()); // Lista de produtos
+        model.addAttribute("currentPage", dataPage.getNumber()); // Página atual (base 0)
+        model.addAttribute("totalPages", dataPage.getTotalPages()); // Total de páginas
+        model.addAttribute("totalElements", dataPage.getTotalElements()); // Total de itens
+        model.addAttribute("pageSize", dataPage.getSize()); // Tamanho da página
+        model.addAttribute("categoryId", categoryId); // ID da categoria (para navegação)
+        model.addAttribute("categorySlug", categorySlug); // Slug da categoria (para navegação)
+        model.addAttribute("template", "product/products-list"); // Template de exibição
         return "layout";
     }
 
