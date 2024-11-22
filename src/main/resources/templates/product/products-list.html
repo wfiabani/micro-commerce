@@ -5,6 +5,32 @@
 </div>
 
 <div th:if="${data.size()}" class="container">
+
+    <div class="row g-4">
+        <!-- Iteração dos produtos -->
+        <div th:each="product : ${data}" class="col-md-4 col-sm-6 col-lg-3 mt-4">
+            <div class="card h-100">
+                <!-- Imagem principal -->
+                <img th:src="${product.images[0]?.fileName}" class="card-img-top" alt="Product Image">
+                <div class="card-body">
+                    <!-- Nome do produto -->
+                    <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                    <!-- Descrição curta -->
+                    <p class="card-text" th:text="${product.shortDescription}">Short description of the product.</p>
+                    <!-- Preço -->
+                    <p class="card-text text-primary fw-bold" th:text="${product.price}">R$ 0,00</p>
+                </div>
+                <div class="card-footer text-center">
+                    <!-- Botão para visualizar detalhes -->
+                    <a th:href="@{'/product/' + ${product.id} + '/' + ${product.name}}" class="btn btn-primary">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div th:replace="product/pagination"></div>
 </div>
 
