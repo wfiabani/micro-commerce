@@ -57,7 +57,7 @@ public class ProductController {
                                         @PathVariable Long categoryId,
                                         @PathVariable String categorySlug,
                                         @RequestParam(defaultValue = "0") int page) {
-        int pageSize = 3;
+        int pageSize = 12;
         PageRequest pageRequest = PageRequest.of(page, pageSize);
         Page<Product> productsPage = productManager.getProductsByCategory(categoryId, pageRequest);
         Page<ProductMapper.GetProduct> dataPage = ProductMapper.INSTANCE.toGetProductPage(productsPage);
