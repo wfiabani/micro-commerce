@@ -32,4 +32,9 @@ public class ProductManager {
     public Page<Product> getProductsByCategory(Long categoryId, PageRequest pageRequest) {
         return productRepository.findAllByCategoryIdAndIsActiveTrue(categoryId, pageRequest);
     }
+
+    @Cacheable("products")
+    public Page<Product> getProducts(PageRequest pageRequest) {
+        return productRepository.findAllByIsActiveTrue(pageRequest);
+    }
 }

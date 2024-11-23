@@ -1,13 +1,13 @@
 package com.commerce.controller;
 
 
-import com.commerce.manager.CategoryService;
-import com.commerce.model.Category;
-import com.commerce.repository.ProductRepository;
+import com.commerce.controller.product.schema.ProductMapper;
+import com.commerce.manager.ProductManager;
+import com.commerce.model.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,36 +16,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductManager productManager;
 
-    @Autowired
-    private CategoryService categoryService;
+    public HomeController(ProductManager productManager) {
+        this.productManager = productManager;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    @GetMapping("/layout")
-    public String home(Model model) {
-        model.addAttribute("message", "Bem-vindo à aplicação Spring Boot com Thymeleaf!");
-
-        logger.info("This is an INFO log message.");
-        logger.debug("This is a DEBUG log message.");
-        logger.warn("This is a WARN log message.");
-        logger.error("This is an ERROR log message.");
-
+    @GetMapping({"/home", "/"})
+    public String getProducts(Model model,
+                              @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 12;
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        Page<Product> productsPage = productManager.getProducts(pageRequest);
+        Page<ProductMapper.GetProduct> dataPage = ProductMapper.INSTANCE.toGetProductPage(productsPage);
+        model.addAttribute("data", dataPage.getContent());
+        model.addAttribute("currentPage", dataPage.getNumber());
+        model.addAttribute("totalPages", dataPage.getTotalPages());
+        model.addAttribute("totalElements", dataPage.getTotalElements());
+        model.addAttribute("pageSize", dataPage.getSize());
         model.addAttribute("template", "home/home");
-        model.addAttribute("variable", "var");
-
         return "layout";
-    }
-
-    @GetMapping("/meus-objetos")
-    public String listarObjetos(Model model,
-                                @RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "2") int size) {
-        Page<Category> categorias = categoryService.listar(page, size);
-        model.addAttribute("categorias", categorias);
-        return "meus-objetos"; // Este deve corresponder ao nome do arquivo HTML
     }
 
 

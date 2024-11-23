@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<div>
-    <h1 th:text="${variable}"></h1>
-    <nav>
-        <!-- Navbar content -->
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-    </nav>
+<div th:if="${data.size()}" class="container">
+
+    <div class="row g-4">
+        <div th:replace="product/product-card"></div>
+    </div>
+
+    <div th:replace="home/pagination"></div>
 </div>
-</html>
+
