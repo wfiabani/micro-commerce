@@ -67,7 +67,7 @@ public class CheckoutController {
             @RequestHeader("x-request-id") String xRequestId,
             @RequestParam Map<String, String> queryParams
     ) {
-        logger.info("Retorno webhook: " + payload);
+        logger.info("Webhook chamado {}", payload);
     }
 
 
@@ -100,7 +100,7 @@ public class CheckoutController {
 //        System.out.println("Site ID: " + site_id);
 //        System.out.println("Processing Mode: " + processing_mode);
 //        System.out.println("Merchant Account ID: " + merchant_account_id);
-
+        logger.info("URL success de callback chamada merchant_account_id={} preference_id={} merchant_order_id={} external_reference={} status={}", merchant_account_id, preference_id, merchant_order_id, external_reference, status);
         try {
             cartManager.clear();
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
@@ -129,6 +129,7 @@ public class CheckoutController {
                                        @RequestParam(required = false) String processing_mode,
                                        @RequestParam(required = false) String merchant_account_id) {
 
+        logger.info("URL pending de callback chamada merchant_account_id={} preference_id={} merchant_order_id={} external_reference={} status={}", merchant_account_id, preference_id, merchant_order_id, external_reference, status);
         try {
             cartManager.clear();
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
@@ -157,6 +158,7 @@ public class CheckoutController {
                                        @RequestParam(required = false) String processing_mode,
                                        @RequestParam(required = false) String merchant_account_id) {
 
+        logger.info("URL failure de callback chamada merchant_account_id={} preference_id={} merchant_order_id={} external_reference={} status={}", merchant_account_id, preference_id, merchant_order_id, external_reference, status);
         try {
             cartManager.clear();
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);

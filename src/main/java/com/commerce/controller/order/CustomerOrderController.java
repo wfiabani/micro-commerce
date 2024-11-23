@@ -10,6 +10,8 @@ import com.commerce.model.session.Cart;
 import com.commerce.util.TemplateConstants;
 import jakarta.validation.Valid;
 import org.apache.commons.beanutils.ConversionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ public class CustomerOrderController {
 
     private final CartManager cartManager;
     private final CustomerOrderManager orderManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomerOrderController.class);
 
     @Value("${custom.MP_PUBLIC_KEY}")
     private String mpPublicKey;
@@ -44,6 +48,7 @@ public class CustomerOrderController {
 
     @Value("${spring.profiles.active:default}")
     private String activeProfile;
+    
 
     public CustomerOrderController(CustomerOrderManager orderManager, CartManager cartManager) {
         this.orderManager = orderManager;
@@ -53,9 +58,11 @@ public class CustomerOrderController {
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<?> addCustomerOrder(@Valid @RequestBody CustomerOrderMapper.PostCustomerOrder request) {
+        logger.info("Adicionando pedido {}", request.toString());
         try {
             var customerOrder = orderManager.addCustomerOrder(request);
             var data = CustomerOrderMapper.INSTANCE.toGetCustomerOrder(customerOrder);
+            logger.info("Pedido criado {}", data);
             return ResponseEntity.ok(data);
         } catch (InvalidOrderException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

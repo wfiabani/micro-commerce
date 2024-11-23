@@ -7,6 +7,8 @@ import com.commerce.model.Product;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.resources.preference.Preference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +25,8 @@ public class CheckoutManager {
 
     @Value("${custom.SITE_BASEURL}")
     private String siteBaseurl;
+
+    private static final Logger logger = LoggerFactory.getLogger(CheckoutManager.class);
 
     public CheckoutManager() {
         // Noncompliant - method is empty
@@ -57,6 +61,7 @@ public class CheckoutManager {
                     .build();
 
             PreferenceClient client = new PreferenceClient();
+            logger.info("Criando preferência {}", preferenceRequest.toString());
             return client.create(preferenceRequest);
         } catch (Exception e) {
             throw new CheckoutException("Erro ao criar preferência");
