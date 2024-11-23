@@ -26,6 +26,8 @@ public class CheckoutController {
 
     private final CheckoutManager checkoutManager;
 
+    private final CartManager cartManager;
+
     private static final Logger logger = LoggerFactory.getLogger(CheckoutController.class);
 
     @Value("${custom.MP_PUBLIC_KEY}")
@@ -34,6 +36,7 @@ public class CheckoutController {
     public CheckoutController(CustomerOrderManager customerOrderManager, CartManager cartManager, CheckoutManager checkoutManager) {
         this.customerOrderManager = customerOrderManager;
         this.checkoutManager = checkoutManager;
+        this.cartManager = cartManager;
     }
 
 
@@ -98,6 +101,7 @@ public class CheckoutController {
 //        System.out.println("Merchant Account ID: " + merchant_account_id);
 
         try {
+            cartManager.clear();
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
             logger.trace(data.getMerchantOrderId());
             model.addAttribute("data", data);
@@ -125,6 +129,7 @@ public class CheckoutController {
                                        @RequestParam(required = false) String merchant_account_id) {
 
         try {
+            cartManager.clear();
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
             logger.trace(data.getMerchantOrderId());
             model.addAttribute("data", data);
@@ -152,6 +157,7 @@ public class CheckoutController {
                                        @RequestParam(required = false) String merchant_account_id) {
 
         try {
+            cartManager.clear();
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
             logger.trace(data.getMerchantOrderId());
             model.addAttribute("data", data);
