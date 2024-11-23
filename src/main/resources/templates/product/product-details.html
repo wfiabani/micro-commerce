@@ -75,6 +75,7 @@
     </div>
 </div>
 
+
 <script>
     function addToCart(productId) {
         let quantity = $("#quantity").val();
@@ -93,7 +94,16 @@
                     title: 'Produto adicionado!',
                     text: 'Produto adicionado com sucesso ao carrinho de compras',
                     icon: 'success',
-                    confirmButtonText: 'Continuar Comprando'
+                    showCancelButton: true,
+                    confirmButtonText: 'Finalizar Compra',
+                    cancelButtonText: 'Continuar Comprando'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/shopping-cart/summary';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = '/';
+                        console.log('Continuar comprando');
+                    }
                 });
             },
             error: function(error) {
