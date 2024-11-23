@@ -25,6 +25,11 @@ public interface CartMapper {
         return getCartItems;
     }
 
+    default GetCartTotalItems toGetCartTotalItems(Cart cart) {
+        int totalQuantity = cart.getItems().values().stream().mapToInt(Integer::intValue).sum();
+        return new GetCartTotalItems(totalQuantity);
+    }
+
     record GetCart(
             List<GetCartItem> items,
             BigDecimal shippingValue,
@@ -47,4 +52,8 @@ public interface CartMapper {
         Long productId,
         Integer quantity
     ){}
+
+    record GetCartTotalItems(
+            Integer totalQuantity
+    ) {}
 }

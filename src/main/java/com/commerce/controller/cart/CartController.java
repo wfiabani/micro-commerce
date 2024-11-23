@@ -36,6 +36,13 @@ public class CartController {
         return "layout";
     }
 
+    @ResponseBody
+    @GetMapping("/cart-total-items")
+    public CartMapper.GetCartTotalItems getCartTotalItems() {
+        Cart cart = cartManager.getCart();
+        return CartMapper.INSTANCE.toGetCartTotalItems(cart);
+    }
+
     @GetMapping("/get-items")
     @ResponseBody
     public ResponseEntity<CartMapper.GetCart> getJSONCart() {

@@ -16,6 +16,10 @@
         position: relative;
         color: #333;
         font-size: 20px;
+        cursor: pointer;
+    }
+    .cart-buttom::hover{
+        opacity: 0.8;
     }
     .cart-button .item-count {
         position: absolute;
@@ -23,7 +27,7 @@
         right: -10px;
         background-color: red;
         color: white;
-        border-radius: 50%;
+        border-radius: 14px;
         padding: 2px 5px;
         font-size: 12px;
     }
@@ -72,7 +76,7 @@
         <i class="fas fa-bars"></i>
     </div>
     <div class="logo">Logo</div>
-    <div class="cart-button">
+    <div class="cart-button" onclick="parent.location='/shopping-cart/summary'">
         <i class="fas fa-shopping-cart"></i>
         <span class="item-count" id="itemCount">3</span>
     </div>
@@ -105,4 +109,19 @@
     menuToggle.addEventListener('click', function() {
         mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block'; // Alterna a exibição do menu
     });
+
+    $.ajax({
+        url: '/shopping-cart/cart-total-items',
+        type: 'GET',
+        contentType: 'application/json',
+        success: function(response) {
+            if(response.totalQuantity){
+                $("#itemCount").html(response.totalQuantity).show();
+            }else{
+                $("#itemCount").hide();
+            }
+        },
+        error: function(xhr, status, error) {}
+    });
+
 </script>

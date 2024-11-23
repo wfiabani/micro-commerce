@@ -1,3 +1,12 @@
+<style>
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #333;
+    background-size: 100%;
+    border-radius: 50%;
+}
+</style>
+
 <div th:if="!${data.active}" class="container text-center mt-5">
     <h3>Produto Indisponível</h3>
     <p>Este produto não está mais disponível para compra.</p>
@@ -39,7 +48,7 @@
                 <div th:if="${data.stock > 0}">
                     <p><strong>Estoque:</strong> <span th:text="${data.stock}">Em estoque</span></p>
 
-                    <!-- Product Specifications -->
+                    <!-- Product Specifications
                     <h4>Especificações</h4>
                     <ul>
                         <li><strong>Altura:</strong> <span th:text="${data.height}">0.0</span> cm</li>
@@ -47,6 +56,7 @@
                         <li><strong>Comprimento:</strong> <span th:text="${data.length}">0.0</span> cm</li>
                         <li><strong>Peso:</strong> <span th:text="${data.weight}">0.0</span> kg</li>
                     </ul>
+                    -->
 
                     <!-- Quantity input and Add to Cart Button -->
                     <div class="form-group">
