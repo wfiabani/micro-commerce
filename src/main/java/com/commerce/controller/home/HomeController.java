@@ -1,11 +1,10 @@
-package com.commerce.controller;
+package com.commerce.controller.home;
 
 
 import com.commerce.controller.product.schema.ProductMapper;
 import com.commerce.manager.ProductManager;
 import com.commerce.model.Product;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.commerce.util.TemplateConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -22,8 +21,6 @@ public class HomeController {
         this.productManager = productManager;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
     @GetMapping({"/home", "/"})
     public String getProducts(Model model,
                               @RequestParam(defaultValue = "0") int page) {
@@ -36,8 +33,8 @@ public class HomeController {
         model.addAttribute("totalPages", dataPage.getTotalPages());
         model.addAttribute("totalElements", dataPage.getTotalElements());
         model.addAttribute("pageSize", dataPage.getSize());
-        model.addAttribute("template", "home/home");
-        return "layout";
+        model.addAttribute("template", TemplateConstants.HOME);
+        return TemplateConstants.LAYOUT;
     }
 
 

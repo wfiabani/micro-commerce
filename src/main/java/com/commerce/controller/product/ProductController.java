@@ -4,6 +4,7 @@ import com.commerce.controller.product.schema.ProductMapper;
 import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.ProductManager;
 import com.commerce.model.Product;
+import com.commerce.util.TemplateConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,11 @@ public class ProductController {
             Product product = productManager.getProduct(id);
             ProductMapper.GetProduct data = ProductMapper.INSTANCE.toGetProduct(product);
             model.addAttribute("data", data);
-            model.addAttribute("template", "product/product-details");
-            return "layout";
+            model.addAttribute("template", TemplateConstants.PRODUCT_DETAILS);
+            return TemplateConstants.LAYOUT;
         } catch (ProductNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error/error"; // Redireciona para uma página de erro customizada
+            return TemplateConstants.ERROR;
         }
     }
 
@@ -62,15 +63,15 @@ public class ProductController {
         Page<Product> productsPage = productManager.getProductsByCategory(categoryId, pageRequest);
         Page<ProductMapper.GetProduct> dataPage = ProductMapper.INSTANCE.toGetProductPage(productsPage);
         // Adiciona informações ao modelo para exibição no HTML
-        model.addAttribute("data", dataPage.getContent()); // Lista de produtos
-        model.addAttribute("currentPage", dataPage.getNumber()); // Página atual (base 0)
-        model.addAttribute("totalPages", dataPage.getTotalPages()); // Total de páginas
-        model.addAttribute("totalElements", dataPage.getTotalElements()); // Total de itens
-        model.addAttribute("pageSize", dataPage.getSize()); // Tamanho da página
-        model.addAttribute("categoryId", categoryId); // ID da categoria (para navegação)
-        model.addAttribute("categorySlug", categorySlug); // Slug da categoria (para navegação)
-        model.addAttribute("template", "product/products-list"); // Template de exibição
-        return "layout";
+        model.addAttribute("data", dataPage.getContent());
+        model.addAttribute("currentPage", dataPage.getNumber());
+        model.addAttribute("totalPages", dataPage.getTotalPages());
+        model.addAttribute("totalElements", dataPage.getTotalElements());
+        model.addAttribute("pageSize", dataPage.getSize());
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("categorySlug", categorySlug);
+        model.addAttribute("template", TemplateConstants.PRODUCT_LIST);
+        return TemplateConstants.LAYOUT;
     }
 
 }

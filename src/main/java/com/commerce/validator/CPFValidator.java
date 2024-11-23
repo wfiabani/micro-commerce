@@ -7,7 +7,9 @@ import jakarta.validation.ConstraintValidatorContext;
 public class CPFValidator implements ConstraintValidator<ValidCPF, String> {
 
     @Override
-    public void initialize(ValidCPF constraintAnnotation) {}
+    public void initialize(ValidCPF constraintAnnotation) {
+        // Noncompliant - method is empty
+    }
 
     @Override
     public boolean isValid(String cpf, ConstraintValidatorContext context) {

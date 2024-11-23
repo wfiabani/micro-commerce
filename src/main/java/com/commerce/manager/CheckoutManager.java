@@ -1,6 +1,5 @@
 package com.commerce.manager;
 
-import com.commerce.controller.checkout.CheckoutController;
 import com.commerce.exception.CheckoutException;
 import com.commerce.model.CustomerOrder;
 import com.commerce.model.CustomerOrderItem;
@@ -8,8 +7,6 @@ import com.commerce.model.Product;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.resources.preference.Preference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +18,6 @@ import java.util.List;
 @Validated
 public class CheckoutManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(CheckoutController.class);
-
     @Value("${custom.MP_ACCESS_TOKEN}")
     private String mpAccessToken;
 
@@ -30,7 +25,7 @@ public class CheckoutManager {
     private String siteBaseurl;
 
     public CheckoutManager() {
-
+        // Noncompliant - method is empty
     }
 
     public Preference createPreference(CustomerOrder customerOrder) {

@@ -8,6 +8,7 @@ import com.commerce.exception.ProductNotFoundException;
 import com.commerce.manager.CartManager;
 import com.commerce.manager.ProductManager;
 import com.commerce.model.session.Cart;
+import com.commerce.util.TemplateConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,7 @@ public class CartController {
         Cart cart = cartManager.getCart();
         model.addAttribute("cart", CartMapper.INSTANCE.toGetCart(cart));
         model.addAttribute("template", "cart/cart");
-        return "layout";
+        return TemplateConstants.LAYOUT;
     }
 
     @ResponseBody

@@ -7,6 +7,7 @@ import com.commerce.exception.OrderProcessingException;
 import com.commerce.manager.CartManager;
 import com.commerce.manager.CustomerOrderManager;
 import com.commerce.model.session.Cart;
+import com.commerce.util.TemplateConstants;
 import jakarta.validation.Valid;
 import org.apache.commons.beanutils.ConversionException;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,8 +74,8 @@ public class CustomerOrderController {
         Cart cart = cartManager.getCart();
         var response = CartMapper.INSTANCE.toGetCart(cart);
         model.addAttribute("cart", response);
-        model.addAttribute("template", "order/order-details");
-        return "layout";
+        model.addAttribute("template", TemplateConstants.ORDER_DETAILS);
+        return TemplateConstants.LAYOUT;
     }
 
 

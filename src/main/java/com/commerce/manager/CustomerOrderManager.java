@@ -32,6 +32,8 @@ public class CustomerOrderManager {
     private final ProductRepository productRepository;
     private final Cart cart;
 
+    private final Random random = new Random();
+
     public CustomerOrderManager(CustomerOrderRepository customerOrderRepository, ProductRepository productRepository, Cart cart) {
         this.customerOrderRepository = customerOrderRepository;
         this.productRepository = productRepository;
@@ -122,7 +124,7 @@ public class CustomerOrderManager {
 
     private String generateOrderIdentifier() {
         long timestamp = Instant.now().toEpochMilli();
-        int randomValue = new Random().nextInt(10000);
+        int randomValue = random.nextInt(10000); // Reutiliza a instância de Random
         return String.format("%d-%04d", timestamp, randomValue);
     }
 

@@ -6,6 +6,7 @@ import com.commerce.manager.CartManager;
 import com.commerce.manager.CheckoutManager;
 import com.commerce.manager.CustomerOrderManager;
 import com.commerce.model.CustomerOrder;
+import com.commerce.util.TemplateConstants;
 import com.mercadopago.resources.preference.Preference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,11 +50,11 @@ public class CheckoutController {
             model.addAttribute("preferenceId", preference.getId());
             model.addAttribute("mpPublicKey", mpPublicKey);
             model.addAttribute("data", data);
-            model.addAttribute("template", "checkout/payment");
-            return "layout";
+            model.addAttribute("template", TemplateConstants.CHECKOUT_PAYMENT);
+            return TemplateConstants.LAYOUT;
         } catch (CheckoutException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error/error";
+            return TemplateConstants.ERROR;
         }
     }
 
@@ -66,7 +67,7 @@ public class CheckoutController {
             @RequestHeader("x-request-id") String xRequestId,
             @RequestParam Map<String, String> queryParams
     ) {
-        System.out.println("Retorno webhook: " + payload);
+        logger.info("Retorno webhook: " + payload);
     }
 
 
@@ -105,11 +106,11 @@ public class CheckoutController {
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
             logger.trace(data.getMerchantOrderId());
             model.addAttribute("data", data);
-            model.addAttribute("template", "checkout/back-urls/success");
-            return "layout";
+            model.addAttribute("template", TemplateConstants.CHECKOUT_BACKURL_SUCCESS);
+            return TemplateConstants.LAYOUT;
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error/error";
+            return TemplateConstants.ERROR;
         }
 
     }
@@ -133,11 +134,11 @@ public class CheckoutController {
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
             logger.trace(data.getMerchantOrderId());
             model.addAttribute("data", data);
-            model.addAttribute("template", "checkout/back-urls/success");
-            return "layout";
+            model.addAttribute("template", TemplateConstants.CHECKOUT_BACKURL_PENDING);
+            return TemplateConstants.LAYOUT;
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error/error";
+            return TemplateConstants.ERROR;
         }
 
     }
@@ -161,11 +162,11 @@ public class CheckoutController {
             CustomerOrder data = updateMerchantOrderId(external_reference, merchant_order_id);
             logger.trace(data.getMerchantOrderId());
             model.addAttribute("data", data);
-            model.addAttribute("template", "checkout/back-urls/success");
-            return "layout";
+            model.addAttribute("template", TemplateConstants.CHECKOUT_BACKURL_FAILURE);
+            return TemplateConstants.LAYOUT;
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error/error";
+            return TemplateConstants.ERROR;
         }
 
     }
