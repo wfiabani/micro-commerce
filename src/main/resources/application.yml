@@ -31,3 +31,10 @@ logging:
     org.springframework.boot.context.config: debug
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY_ID}}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+  logGroupName: ${AWS_LOG_GROUP_NAME}
+  logStreamName: ${AWS_LOG_STREAM_NAME}
