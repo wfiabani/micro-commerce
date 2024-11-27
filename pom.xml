@@ -83,6 +83,11 @@
 			<artifactId>caffeine</artifactId>
 			<version>3.1.8</version>
 		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>ses</artifactId>
+			<version>2.20.0</version> <!-- Certifique-se de usar a versão atual -->
+		</dependency>
 	</dependencies>
 
 	<build>
