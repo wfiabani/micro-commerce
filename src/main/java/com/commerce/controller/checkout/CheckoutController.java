@@ -2,6 +2,7 @@ package com.commerce.controller.checkout;
 
 import com.commerce.controller.order.schema.CustomerOrderMapper;
 import com.commerce.exception.CheckoutException;
+import com.commerce.exception.OrderException;
 import com.commerce.manager.CartManager;
 import com.commerce.manager.CheckoutManager;
 import com.commerce.manager.CustomerOrderManager;
@@ -71,7 +72,7 @@ public class CheckoutController {
     }
 
 
-    private CustomerOrder updateMerchantOrderId(String external_reference, String merchant_order_id) throws Exception {
+    private CustomerOrder updateMerchantOrderId(String external_reference, String merchant_order_id) throws OrderException {
         return customerOrderManager.updateMerchantOrderId(external_reference, merchant_order_id);
     }
 

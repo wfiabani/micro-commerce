@@ -61,7 +61,7 @@ public class CheckoutManager {
                     .build();
 
             PreferenceClient client = new PreferenceClient();
-            logger.info("Criando preferência {}", preferenceRequest.toString());
+            logger.info("Criando preferência {}", preferenceRequest);
             return client.create(preferenceRequest);
         } catch (Exception e) {
             throw new CheckoutException("Erro ao criar preferência");

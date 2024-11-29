@@ -40,7 +40,7 @@ public class Cart implements Serializable {
 
     public void updateItemQuantity(ProductMapper.GetProduct product, Integer newQuantity) {
         if (items.containsKey(product)) {
-            items.put(product, newQuantity);
+            items.computeIfPresent(product, (key, oldValue) -> newQuantity);
         }
     }
 

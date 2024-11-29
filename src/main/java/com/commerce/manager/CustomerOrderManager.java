@@ -111,9 +111,8 @@ public class CustomerOrderManager {
 
 
     public CustomerOrder getOrder(String id) {
-        CustomerOrder customerOrder = customerOrderRepository.findByOrderIdentifier(id)
+        return customerOrderRepository.findByOrderIdentifier(id)
                 .orElseThrow(() -> new CustomerOrderNotFoundException("Customer order with identifier " + id + " not found."));
-        return customerOrder;
     }
 
     public CustomerOrder getOrderByMerchantOrderId(String merchantOrderId) {

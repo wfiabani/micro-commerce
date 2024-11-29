@@ -9,6 +9,8 @@ import com.commerce.manager.CartManager;
 import com.commerce.manager.ProductManager;
 import com.commerce.model.session.Cart;
 import com.commerce.util.TemplateConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("shopping-cart")
 @Validated
 public class CartController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     private CartManager cartManager;
     private ProductManager productManager;
@@ -58,12 +62,16 @@ public class CartController {
         try {
             var product = productManager.getProduct(request.productId());
             cartManager.addItem(ProductMapper.INSTANCE.toGetProduct(product), request.quantity());
+            logger.info("Produto adicionado com sucesso {}", product);
             return ResponseEntity.ok("Product added to cart successfully.");
         } catch (InactiveProductException e) {
+            logger.info("Produto Inativo");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (InsufficientStockException e) {
+            logger.info("Estoque insuficiente");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ProductNotFoundException e) {
+            logger.info("Produto não encontrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

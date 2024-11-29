@@ -57,7 +57,7 @@ public class CustomerOrderController {
 
     @PostMapping("/add")
     @ResponseBody
-    public ResponseEntity<?> addCustomerOrder(@Valid @RequestBody CustomerOrderMapper.PostCustomerOrder request) {
+    public ResponseEntity<Object> addCustomerOrder(@Valid @RequestBody CustomerOrderMapper.PostCustomerOrder request) {
         logger.info("Adicionando pedido {}", request.toString());
         try {
             var customerOrder = orderManager.addCustomerOrder(request);
@@ -65,12 +65,16 @@ public class CustomerOrderController {
             logger.info("Pedido criado {}", data);
             return ResponseEntity.ok(data);
         } catch (InvalidOrderException e) {
+            logger.error("Ordem inválida {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (OrderProcessingException e) {
+            logger.error("Problema no processamento {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ConversionException e) {
+            logger.error("Problema de conversão {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Conversion error: " + e.getMessage());
         } catch (Exception e) {
+            logger.error("Erro interno do servidor {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the order.");
         }
     }
