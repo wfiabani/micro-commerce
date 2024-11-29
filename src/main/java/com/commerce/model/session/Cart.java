@@ -4,13 +4,15 @@ import com.commerce.controller.product.schema.ProductMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 @SessionScope
-public class Cart {
+public class Cart implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Map<ProductMapper.GetProduct, Integer> items = new HashMap<>();
     private BigDecimal shippingValue = BigDecimal.ZERO;
     private BigDecimal totalValue = BigDecimal.ZERO;

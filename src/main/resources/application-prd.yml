@@ -17,6 +17,21 @@ spring:
       format_sql: true
       use_sql_comments: true
 
+  # Configurações do Redis
+  # refatorar, tirar dados sensiveis
+  redis:
+    host: localhost
+    port: 6379
+    password: ''
+
+  # Configurações do Spring Session
+  session:
+    store-type: redis
+    redis:
+      namespace: commerce
+    timeout: 30m
+
+
 # custom fields
 custom:
   MP_PUBLIC_KEY: ${MP_PUBLIC_KEY}

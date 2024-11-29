@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -41,7 +42,8 @@ public interface ProductMapper {
             Double width,
             Double length,
             Double weight
-    ) {
+    )  implements Serializable {
+        private static final long serialVersionUID = 1L;
     }
 
     record GetImage(
@@ -49,7 +51,8 @@ public interface ProductMapper {
             String name,
             String fileName,
             Integer order
-    ) {
+    )  implements Serializable {
+        private static final long serialVersionUID = 1L;
     }
 
 }
