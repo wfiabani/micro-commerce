@@ -21,15 +21,9 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> products;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
-
-    // O método setId pode ser removido para evitar a alteração manual do ID
-    // public void setId(Long id) {
-    //     this.id = id;
-    // }
 
     public String getName() {
         return name;

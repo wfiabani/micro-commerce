@@ -24,7 +24,6 @@ public class Image {
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "fk_image_product"))
     private Product product;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
